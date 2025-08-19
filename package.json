@@ -1,0 +1,29 @@
+{
+  "name": "mysaasproject",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"yarn workspace @mysaasproject/backend dev\" \"yarn workspace @mysaasproject/frontend dev\"",
+    "build": "yarn workspace @mysaasproject/frontend build",
+    "start": "yarn workspace @mysaasproject/frontend start",
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint",
+    "format": "yarn workspaces run format",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  }
+}
+
+
