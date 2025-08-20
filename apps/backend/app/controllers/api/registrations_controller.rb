@@ -1,26 +1,35 @@
 class Api::RegistrationsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:create]
   respond_to :json
 
   def create
     Rails.logger.info "=== SIGN UP DEBUG ==="
     Rails.logger.info "Params: #{params.inspect}"
 
-    user = User.new(user_params)
+    begin
+      user = User.new(user_params)
 
-    if user.save
-      Rails.logger.info "User created successfully!"
-      render json: {
-        status: { code: 200, message: 'Signed up successfully.' },
-        data: {
-          user: user
+      if user.save
+        Rails.logger.info "User created successfully!"
+        render json: {
+          status: { code: 200, message: 'Signed up successfully.' },
+          data: {
+            user: user
+          }
         }
-      }
-    else
-      Rails.logger.info "User creation failed: #{user.errors.full_messages}"
+      else
+        Rails.logger.info "User creation failed: #{user.errors.full_messages}"
+        render json: {
+          status: { code: 422, message: "User couldn't be created successfully." },
+          errors: user.errors.full_messages
+        }, status: :unprocessable_content
+      end
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.info "Parameter missing: #{e.message}"
       render json: {
-        status: { code: 422, message: "User couldn't be created successfully." },
-        errors: user.errors.full_messages
-      }, status: :unprocessable_entity
+        status: { code: 422, message: "Missing required parameters." },
+        errors: [e.message]
+      }, status: :unprocessable_content
     end
   end
 

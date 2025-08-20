@@ -34,10 +34,13 @@ group :development do
   gem "spring"
   gem 'pry'
   gem 'pry-rails'
+  gem 'letter_opener'
 end
 
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
+  gem "database_cleaner-active_record"
+  gem "shoulda-matchers"
 end

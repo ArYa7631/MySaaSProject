@@ -93,11 +93,18 @@ export default function LoginPage() {
               {isSubmitting ? 'Signing in...' : 'Sign in'}
             </Button>
 
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-primary hover:underline">
-                Sign up
-              </Link>
+            <div className="text-center text-sm space-y-2">
+              <div>
+                Don&apos;t have an account?{' '}
+                <Link href="/register" className="text-primary hover:underline">
+                  Sign up
+                </Link>
+              </div>
+              <div>
+                <Link href="/forgot-password" className="text-primary hover:underline">
+                  Forgot your password?
+                </Link>
+              </div>
             </div>
           </form>
         </CardContent>
