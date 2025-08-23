@@ -16,6 +16,7 @@ gem "devise-jwt", "~> 0.9"
 # API and CORS
 gem "rack-cors"
 gem "jbuilder"
+gem "active_model_serializers", "~> 0.10.0"
 
 # Environment and configuration
 gem "dotenv-rails"

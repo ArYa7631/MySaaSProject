@@ -39,19 +39,19 @@ services:
 
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3001
     ports:
       - "3000:3000"
     volumes:
-      - ./apps/frontend:/app
-      - /app/node_modules
-      - /app/.next
+      - .:/app
+      - /app/apps/frontend/node_modules
+      - /app/apps/frontend/.next
     depends_on:
       - backend
-    command: yarn dev
+    command: yarn workspace @mysaasproject/frontend dev
 
   pgadmin:
     image: dpage/pgadmin4:latest

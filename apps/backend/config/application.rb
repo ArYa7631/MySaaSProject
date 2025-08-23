@@ -40,6 +40,10 @@ module MySaaSProject
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    
+    # Add session middleware for API mode (needed for Devise)
+    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Cookies
 
     # CORS configuration
     config.middleware.insert_before 0, Rack::Cors do
