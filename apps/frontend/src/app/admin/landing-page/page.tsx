@@ -6,9 +6,11 @@ import { useLandingPageState } from '@/hooks/use-landing-page-state'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
-import { Plus, Edit, Eye, Trash2, FileText, Save, X } from 'lucide-react'
+import { Plus, Edit, Eye, Trash2, FileText, Save, X, Layout } from 'lucide-react'
 import Link from 'next/link'
 import { SectionBuilder } from '@/components/admin/section-builder'
+import { SectionTemplates } from '@/components/admin/section-templates'
+import { LandingPagePreview } from '@/components/admin/landing-page-preview'
 import { SortableSections } from '@/components/admin/sortable-sections'
 import { LandingPageSection } from '@mysaasproject/shared'
 
@@ -29,6 +31,8 @@ export default function LandingPageEditor() {
   } = useLandingPageState()
 
   const [showSectionBuilder, setShowSectionBuilder] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
   const [editingSection, setEditingSection] = useState<LandingPageSection | null>(null)
 
   // Debug: Log sections data
@@ -99,6 +103,16 @@ export default function LandingPageEditor() {
   const handleCancelSection = () => {
     setShowSectionBuilder(false)
     setEditingSection(null)
+  }
+
+  const handleSelectTemplate = async (template: LandingPageSection) => {
+    try {
+      await addSection(template)
+      setShowTemplates(false)
+    } catch (error) {
+      console.error('Error adding template section:', error)
+      alert('Failed to add template section. Please try again.')
+    }
   }
 
   // Add test section for debugging
@@ -190,12 +204,20 @@ export default function LandingPageEditor() {
           <p className="text-gray-600 mt-2">Customize your landing page sections and content</p>
         </div>
         <div className="flex space-x-4">
+          <Button variant="outline" onClick={() => setShowPreview(true)}>
+            <Eye className="h-4 w-4 mr-2" />
+            Preview
+          </Button>
           <Link href="/landing">
             <Button variant="outline">
               <Eye className="h-4 w-4 mr-2" />
-              Preview
+              Live View
             </Button>
           </Link>
+          <Button onClick={() => setShowTemplates(true)}>
+            <Layout className="h-4 w-4 mr-2" />
+            Templates
+          </Button>
           <Button onClick={handleAddSection}>
             <Plus className="h-4 w-4 mr-2" />
             Add Section
@@ -255,15 +277,16 @@ export default function LandingPageEditor() {
                 </p>
               </div>
               <div className="flex space-x-4 justify-center">
+                <Button onClick={() => setShowTemplates(true)}>
+                  <Layout className="h-4 w-4 mr-2" />
+                  Browse Templates
+                </Button>
                 <Button onClick={handleAddSection}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add First Section
                 </Button>
                 <Button variant="outline" onClick={handleAddTestSection}>
                   Add Test Section
-                </Button>
-                <Button variant="outline" onClick={handleAddMultipleTestSections}>
-                  Add 3 Test Sections
                 </Button>
               </div>
             </div>
@@ -304,6 +327,22 @@ export default function LandingPageEditor() {
           onSave={handleSaveSection}
           onCancel={handleCancelSection}
           initialData={editingSection}
+        />
+      )}
+
+      {/* Section Templates Modal */}
+      {showTemplates && (
+        <SectionTemplates
+          onSelectTemplate={handleSelectTemplate}
+          onClose={() => setShowTemplates(false)}
+        />
+      )}
+
+      {/* Landing Page Preview Modal */}
+      {showPreview && (
+        <LandingPagePreview
+          sections={sections || []}
+          onClose={() => setShowPreview(false)}
         />
       )}
     </div>

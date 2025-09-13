@@ -36,7 +36,7 @@ export const LandingPageContent: React.FC = () => {
       <div className="min-h-screen">
         <Navbar config={marketplaceConfig} />
         <main>
-          <RenderSections sections={sections || []} />
+          <RenderSections sections={Array.isArray(sections) ? sections : []} />
         </main>
         <Footer config={marketplaceConfig} />
       </div>

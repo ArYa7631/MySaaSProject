@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/shared'
+import { LandingPageSection, MarketplaceConfiguration, Community } from '@mysaasproject/shared'
 import { LandingPageService } from '@/services/landing-page.service'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/auth-context'
@@ -43,7 +43,12 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
 
   // Extract data directly from community object - much more efficient!
   const sections = useMemo(() => {
-    return community?.landing_page?.sections || community?.landing_page?.content || []
+    const landingPage = community?.landing_page
+    if (!landingPage) return []
+    
+    // Handle both sections array and content array
+    const sectionsData = landingPage.sections || landingPage.content
+    return Array.isArray(sectionsData) ? sectionsData : []
   }, [community?.landing_page])
 
   const marketplaceConfig = useMemo(() => {

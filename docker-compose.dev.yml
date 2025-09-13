@@ -35,10 +35,10 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - S3_ACCESS_KEY_ID=AKIARRNBJWEDWJTUIZGA
-      - S3_SECRET_ACCESS_KEY=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
-      - S3_BUCKET=aryasoftwaretech.test.bucket
-      - S3_REGION=ap-southeast-2
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_REGION=${S3_REGION}
       - S3_IMAGE_FOLDER_PATH=images
     depends_on:
       - postgres

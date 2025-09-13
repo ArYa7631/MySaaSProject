@@ -25,9 +25,15 @@ interface TestimonialsProps {
 export const Testimonials: React.FC<TestimonialsProps> = ({
   title = 'What Our Customers Say',
   subtitle = 'Don\'t just take our word for it - hear from our satisfied customers',
-  testimonials,
+  testimonials = [],
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  // Safety check - if no testimonials, don't render
+  if (!testimonials || testimonials.length === 0) {
+    console.warn('Testimonials component: No testimonials data provided')
+    return null
+  }
 
   const nextTestimonial = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)

@@ -8,6 +8,12 @@ import { Testimonials } from './testimonials'
 import { Features } from './features'
 import { Pricing } from './pricing'
 import { ImgDescription } from './img-description'
+import { VideoSection } from './video-section'
+import { StatsSection } from './stats-section'
+import { TeamSection } from './team-section'
+import { FAQSection } from './faq-section'
+import { NewsletterSection } from './newsletter-section'
+import { SocialProof } from './social-proof'
 
 interface RenderSectionsProps {
   sections: LandingPageSection[]
@@ -15,12 +21,18 @@ interface RenderSectionsProps {
 
 export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
   const renderSection = (section: LandingPageSection) => {
+    // Ensure section has required properties
+    if (!section || !section.id || !section.type) {
+      console.warn('Invalid section structure:', section)
+      return null
+    }
+
     // Use the 'type' field from the backend data structure
     const sectionType = section.type
     
-    // Ensure content exists
-    if (!section.content) {
-      console.warn(`Section ${section.id} has no content`, section)
+    // Ensure content exists and is an object
+    if (!section.content || typeof section.content !== 'object') {
+      console.warn(`Section ${section.id} has invalid content:`, section.content)
       return null
     }
     
@@ -31,12 +43,15 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
         return <HeroSection key={section.id} {...section.content} />
       case 'Gallery':
         // Map imageUrl to images for Gallery component
+        const imageUrl = section.content?.imageUrl
         const galleryProps = {
           ...section.content,
-          images: section.content.imageUrl?.map((img: any) => ({
-            url: img.url,
-            alt: img.title || img.description
-          })) || []
+          images: Array.isArray(imageUrl) 
+            ? imageUrl.map((img: any) => ({
+                url: img?.url || '',
+                alt: img?.title || img?.description || ''
+              }))
+            : []
         }
         return <Gallery key={section.id} {...galleryProps} />
       case 'InfoColumns':
@@ -44,13 +59,38 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
       case 'ContactForm':
         return <ContactForm key={section.id} {...section.content} />
       case 'Testimonials':
-        return <Testimonials key={section.id} {...section.content} />
+        // Map columns to testimonials for Testimonials component
+        const testimonialsProps = {
+          ...section.content,
+          testimonials: section.content?.columns?.map((col: any, index: number) => ({
+            id: `testimonial-${index}`,
+            name: col.title || 'Anonymous',
+            role: 'Client',
+            company: '',
+            content: col.description || col.content || '',
+            rating: 5,
+            avatar: col.avatar
+          })) || []
+        }
+        return <Testimonials key={section.id} {...testimonialsProps} />
       case 'Features':
         return <Features key={section.id} {...section.content} />
       case 'Pricing':
         return <Pricing key={section.id} {...section.content} />
       case 'ImgDescription':
         return <ImgDescription key={section.id} {...section.content} />
+      case 'VideoSection':
+        return <VideoSection key={section.id} {...section.content} />
+      case 'StatsSection':
+        return <StatsSection key={section.id} {...section.content} />
+      case 'TeamSection':
+        return <TeamSection key={section.id} {...section.content} />
+      case 'FAQSection':
+        return <FAQSection key={section.id} {...section.content} />
+      case 'NewsletterSection':
+        return <NewsletterSection key={section.id} {...section.content} />
+      case 'SocialProof':
+        return <SocialProof key={section.id} {...section.content} />
       default:
         console.warn(`Unknown section type: ${sectionType}`, section)
         return (
@@ -63,7 +103,7 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
                 Section type "{sectionType}" is not supported yet.
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Available types: Jumbotron, HeroSection, Gallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription
+                Available types: Jumbotron, HeroSection, Gallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription, VideoSection, StatsSection, TeamSection, FAQSection, NewsletterSection, SocialProof
               </p>
             </div>
           </div>
@@ -77,5 +117,13 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
     return null
   }
 
-  return <>{sections.map(renderSection)}</>
+  // Filter out any null/undefined sections and render
+  const validSections = sections.filter(Boolean)
+  
+  if (validSections.length === 0) {
+    console.warn('No valid sections to render')
+    return null
+  }
+
+  return <>{validSections.map(renderSection)}</>
 }

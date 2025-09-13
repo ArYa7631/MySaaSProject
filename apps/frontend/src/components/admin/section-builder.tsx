@@ -17,14 +17,21 @@ interface SectionBuilderProps {
 }
 
 const sectionTypes = [
-  { value: 'HeroSection', label: 'Hero Section', description: 'Full-screen hero with background image/video' },
-  { value: 'Jumbotron', label: 'Jumbotron', description: 'Simple hero section with title and buttons' },
-  { value: 'Gallery', label: 'Gallery', description: 'Image gallery with multiple photos' },
-  { value: 'InfoColumns', label: 'Info Columns', description: 'Information displayed in columns' },
-  { value: 'ContactForm', label: 'Contact Form', description: 'Contact form for visitors' },
-  { value: 'Testimonials', label: 'Testimonials', description: 'Customer testimonials and reviews' },
-  { value: 'Features', label: 'Features', description: 'Product features showcase' },
-  { value: 'Pricing', label: 'Pricing', description: 'Pricing plans and packages' },
+  { value: 'HeroSection', label: 'Hero Section', description: 'Full-screen hero with background image/video', icon: '🎯' },
+  { value: 'Jumbotron', label: 'Jumbotron', description: 'Simple hero section with title and buttons', icon: '📢' },
+  { value: 'Gallery', label: 'Gallery', description: 'Image gallery with multiple photos', icon: '🖼️' },
+  { value: 'InfoColumns', label: 'Info Columns', description: 'Information displayed in columns', icon: '📊' },
+  { value: 'ContactForm', label: 'Contact Form', description: 'Contact form for visitors', icon: '📝' },
+  { value: 'Testimonials', label: 'Testimonials', description: 'Customer testimonials and reviews', icon: '⭐' },
+  { value: 'Features', label: 'Features', description: 'Product features showcase', icon: '✨' },
+  { value: 'Pricing', label: 'Pricing', description: 'Pricing plans and packages', icon: '💰' },
+  { value: 'ImgDescription', label: 'Image & Description', description: 'Image with descriptive text and button', icon: '🖋️' },
+  { value: 'VideoSection', label: 'Video Section', description: 'Video player with title and description', icon: '🎥' },
+  { value: 'StatsSection', label: 'Statistics', description: 'Numbers and statistics display', icon: '📈' },
+  { value: 'TeamSection', label: 'Team Section', description: 'Team members with photos and bios', icon: '👥' },
+  { value: 'FAQSection', label: 'FAQ Section', description: 'Frequently asked questions', icon: '❓' },
+  { value: 'NewsletterSection', label: 'Newsletter Signup', description: 'Email subscription form', icon: '📧' },
+  { value: 'SocialProof', label: 'Social Proof', description: 'Logos, badges, and trust indicators', icon: '🏆' },
 ]
 
 export const SectionBuilder: React.FC<SectionBuilderProps> = ({
@@ -234,6 +241,484 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
           </div>
         )
 
+      case 'ImgDescription':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="imgHeader">Header</Label>
+              <Input
+                id="imgHeader"
+                value={sectionData.content.header || ''}
+                onChange={(e) => handleContentChange('header', e.target.value)}
+                placeholder="Section Header"
+              />
+            </div>
+            <div>
+              <Label htmlFor="imgDescription">Description</Label>
+              <Textarea
+                id="imgDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Detailed description"
+                rows={4}
+              />
+            </div>
+            <div>
+              <Label htmlFor="imageURL">Image URL</Label>
+              <Input
+                id="imageURL"
+                value={sectionData.content.imageURL || ''}
+                onChange={(e) => handleContentChange('imageURL', e.target.value)}
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="buttonLabel">Button Label</Label>
+                <Input
+                  id="buttonLabel"
+                  value={sectionData.content.buttonLabel || ''}
+                  onChange={(e) => handleContentChange('buttonLabel', e.target.value)}
+                  placeholder="Learn More"
+                />
+              </div>
+              <div>
+                <Label htmlFor="buttonURL">Button URL</Label>
+                <Input
+                  id="buttonURL"
+                  value={sectionData.content.buttonURL || ''}
+                  onChange={(e) => handleContentChange('buttonURL', e.target.value)}
+                  placeholder="/about"
+                />
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'VideoSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="videoTitle">Video Title</Label>
+              <Input
+                id="videoTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Watch Our Story"
+              />
+            </div>
+            <div>
+              <Label htmlFor="videoDescription">Description</Label>
+              <Textarea
+                id="videoDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Learn more about our company"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="videoUrl">Video URL</Label>
+              <Input
+                id="videoUrl"
+                value={sectionData.content.videoUrl || ''}
+                onChange={(e) => handleContentChange('videoUrl', e.target.value)}
+                placeholder="https://youtube.com/watch?v=..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="thumbnailUrl">Thumbnail URL (optional)</Label>
+              <Input
+                id="thumbnailUrl"
+                value={sectionData.content.thumbnailUrl || ''}
+                onChange={(e) => handleContentChange('thumbnailUrl', e.target.value)}
+                placeholder="https://example.com/thumbnail.jpg"
+              />
+            </div>
+          </div>
+        )
+
+      case 'StatsSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="statsTitle">Section Title</Label>
+              <Input
+                id="statsTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Our Impact"
+              />
+            </div>
+            <div>
+              <Label htmlFor="statsDescription">Description</Label>
+              <Textarea
+                id="statsDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Numbers that matter"
+                rows={2}
+              />
+            </div>
+            <div>
+              <Label htmlFor="stats">Statistics (one per line, format: "Number|Label|Description")</Label>
+              <Textarea
+                id="stats"
+                value={sectionData.content.stats?.map((stat: any) => `${stat.number}|${stat.label}|${stat.description}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const stats = lines.map(line => {
+                    const [number, label, description] = line.split('|')
+                    return { number: number?.trim(), label: label?.trim(), description: description?.trim() }
+                  })
+                  handleContentChange('stats', stats)
+                }}
+                placeholder="1000|Happy Customers|Satisfied clients worldwide&#10;50|Projects|Successfully completed&#10;5|Years|Of experience"
+                rows={5}
+              />
+            </div>
+          </div>
+        )
+
+      case 'TeamSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="teamTitle">Section Title</Label>
+              <Input
+                id="teamTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Meet Our Team"
+              />
+            </div>
+            <div>
+              <Label htmlFor="teamDescription">Description</Label>
+              <Textarea
+                id="teamDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="The people behind our success"
+                rows={2}
+              />
+            </div>
+            <div>
+              <Label htmlFor="teamMembers">Team Members (one per line, format: "Name|Role|Bio|ImageURL")</Label>
+              <Textarea
+                id="teamMembers"
+                value={sectionData.content.members?.map((member: any) => `${member.name}|${member.role}|${member.bio}|${member.imageUrl}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const members = lines.map(line => {
+                    const [name, role, bio, imageUrl] = line.split('|')
+                    return { name: name?.trim(), role: role?.trim(), bio: bio?.trim(), imageUrl: imageUrl?.trim() }
+                  })
+                  handleContentChange('members', members)
+                }}
+                placeholder="John Doe|CEO|Visionary leader with 10+ years experience|https://example.com/john.jpg&#10;Jane Smith|CTO|Technical expert and innovation driver|https://example.com/jane.jpg"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'FAQSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="faqTitle">Section Title</Label>
+              <Input
+                id="faqTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Frequently Asked Questions"
+              />
+            </div>
+            <div>
+              <Label htmlFor="faqDescription">Description</Label>
+              <Textarea
+                id="faqDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Find answers to common questions"
+                rows={2}
+              />
+            </div>
+            <div>
+              <Label htmlFor="faqs">FAQ Items (one per line, format: "Question|Answer")</Label>
+              <Textarea
+                id="faqs"
+                value={sectionData.content.faqs?.map((faq: any) => `${faq.question}|${faq.answer}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const faqs = lines.map(line => {
+                    const [question, answer] = line.split('|')
+                    return { question: question?.trim(), answer: answer?.trim() }
+                  })
+                  handleContentChange('faqs', faqs)
+                }}
+                placeholder="What services do you offer?|We provide web development, mobile apps, and consulting&#10;How long does a project take?|Typically 2-8 weeks depending on complexity"
+                rows={8}
+              />
+            </div>
+          </div>
+        )
+
+      case 'NewsletterSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="newsletterTitle">Section Title</Label>
+              <Input
+                id="newsletterTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Stay Updated"
+              />
+            </div>
+            <div>
+              <Label htmlFor="newsletterDescription">Description</Label>
+              <Textarea
+                id="newsletterDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Subscribe to our newsletter for updates"
+                rows={2}
+              />
+            </div>
+            <div>
+              <Label htmlFor="newsletterPlaceholder">Email Input Placeholder</Label>
+              <Input
+                id="newsletterPlaceholder"
+                value={sectionData.content.placeholder || ''}
+                onChange={(e) => handleContentChange('placeholder', e.target.value)}
+                placeholder="Enter your email address"
+              />
+            </div>
+            <div>
+              <Label htmlFor="newsletterButtonText">Button Text</Label>
+              <Input
+                id="newsletterButtonText"
+                value={sectionData.content.buttonText || ''}
+                onChange={(e) => handleContentChange('buttonText', e.target.value)}
+                placeholder="Subscribe"
+              />
+            </div>
+          </div>
+        )
+
+      case 'SocialProof':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="socialTitle">Section Title</Label>
+              <Input
+                id="socialTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Trusted By"
+              />
+            </div>
+            <div>
+              <Label htmlFor="socialDescription">Description</Label>
+              <Textarea
+                id="socialDescription"
+                value={sectionData.content.description || ''}
+                onChange={(e) => handleContentChange('description', e.target.value)}
+                placeholder="Leading companies trust our solutions"
+                rows={2}
+              />
+            </div>
+            <div>
+              <Label htmlFor="socialItems">Social Proof Items (one per line, format: "Type|Title|Description|ImageURL")</Label>
+              <Textarea
+                id="socialItems"
+                value={sectionData.content.items?.map((item: any) => `${item.type}|${item.title}|${item.description}|${item.imageUrl}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const items = lines.map(line => {
+                    const [type, title, description, imageUrl] = line.split('|')
+                    return { type: type?.trim(), title: title?.trim(), description: description?.trim(), imageUrl: imageUrl?.trim() }
+                  })
+                  handleContentChange('items', items)
+                }}
+                placeholder="logo|Company A|Leading tech company|https://example.com/logo1.png&#10;badge|Award Winner|Best Service 2024|https://example.com/badge.png&#10;testimonial|5-Star Rating|Customer satisfaction|https://example.com/rating.png"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'InfoColumns':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="columnsTitle">Section Title</Label>
+              <Input
+                id="columnsTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Our Services"
+              />
+            </div>
+            <div>
+              <Label htmlFor="columnsSubtitle">Subtitle</Label>
+              <Input
+                id="columnsSubtitle"
+                value={sectionData.content.subtitle || ''}
+                onChange={(e) => handleContentChange('subtitle', e.target.value)}
+                placeholder="What we offer"
+              />
+            </div>
+            <div>
+              <Label htmlFor="columns">Columns (one per line, format: "Title|Description|Icon")</Label>
+              <Textarea
+                id="columns"
+                value={sectionData.content.columns?.map((col: any) => `${col.title}|${col.description}|${col.icon}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const columns = lines.map(line => {
+                    const [title, description, icon] = line.split('|')
+                    return { title: title?.trim(), description: description?.trim(), icon: icon?.trim() }
+                  })
+                  handleContentChange('columns', columns)
+                }}
+                placeholder="Web Development|Custom websites and applications|🌐&#10;Mobile Apps|iOS and Android development|📱&#10;Consulting|Technical guidance and strategy|💡"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'Testimonials':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="testimonialsTitle">Section Title</Label>
+              <Input
+                id="testimonialsTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="What Our Clients Say"
+              />
+            </div>
+            <div>
+              <Label htmlFor="testimonialsSubtitle">Subtitle</Label>
+              <Input
+                id="testimonialsSubtitle"
+                value={sectionData.content.subtitle || ''}
+                onChange={(e) => handleContentChange('subtitle', e.target.value)}
+                placeholder="Trusted by businesses worldwide"
+              />
+            </div>
+            <div>
+              <Label htmlFor="testimonials">Testimonials (one per line, format: "Name|Quote|Icon")</Label>
+              <Textarea
+                id="testimonials"
+                value={sectionData.content.columns?.map((testimonial: any) => `${testimonial.title}|${testimonial.description}|${testimonial.icon}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const testimonials = lines.map(line => {
+                    const [name, quote, icon] = line.split('|')
+                    return { title: name?.trim(), description: quote?.trim(), icon: icon?.trim() }
+                  })
+                  handleContentChange('columns', testimonials)
+                }}
+                placeholder="John Doe|Exceptional work! Delivered ahead of schedule.|⭐&#10;Jane Smith|Professional and reliable service.|⭐&#10;Tech Startup|Game-changing solution for our business.|⭐"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'Features':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="featuresTitle">Section Title</Label>
+              <Input
+                id="featuresTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Key Features"
+              />
+            </div>
+            <div>
+              <Label htmlFor="featuresSubtitle">Subtitle</Label>
+              <Input
+                id="featuresSubtitle"
+                value={sectionData.content.subtitle || ''}
+                onChange={(e) => handleContentChange('subtitle', e.target.value)}
+                placeholder="Why choose us"
+              />
+            </div>
+            <div>
+              <Label htmlFor="features">Features (one per line, format: "Title|Description|Icon")</Label>
+              <Textarea
+                id="features"
+                value={sectionData.content.columns?.map((feature: any) => `${feature.title}|${feature.description}|${feature.icon}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const features = lines.map(line => {
+                    const [title, description, icon] = line.split('|')
+                    return { title: title?.trim(), description: description?.trim(), icon: icon?.trim() }
+                  })
+                  handleContentChange('columns', features)
+                }}
+                placeholder="Fast Delivery|Quick turnaround times|⚡&#10;Quality Code|Clean, maintainable code|🔧&#10;24/7 Support|Always here to help|🛠️"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'Pricing':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="pricingTitle">Section Title</Label>
+              <Input
+                id="pricingTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Pricing Plans"
+              />
+            </div>
+            <div>
+              <Label htmlFor="pricingSubtitle">Subtitle</Label>
+              <Input
+                id="pricingSubtitle"
+                value={sectionData.content.subtitle || ''}
+                onChange={(e) => handleContentChange('subtitle', e.target.value)}
+                placeholder="Choose the perfect plan"
+              />
+            </div>
+            <div>
+              <Label htmlFor="pricingPlans">Pricing Plans (one per line, format: "Name|Price|Period|Features|Popular")</Label>
+              <Textarea
+                id="pricingPlans"
+                value={sectionData.content.plans?.map((plan: any) => `${plan.name}|${plan.price}|${plan.period}|${plan.features?.join(',')}|${plan.popular || 'false'}`).join('\n') || ''}
+                onChange={(e) => {
+                  const lines = e.target.value.split('\n').filter(line => line.trim())
+                  const plans = lines.map(line => {
+                    const [name, price, period, features, popular] = line.split('|')
+                    return { 
+                      name: name?.trim(), 
+                      price: price?.trim(), 
+                      period: period?.trim(), 
+                      features: features?.split(',').map(f => f.trim()).filter(f => f),
+                      popular: popular?.trim() === 'true'
+                    }
+                  })
+                  handleContentChange('plans', plans)
+                }}
+                placeholder="Basic|$99|month|5 pages, Basic support|false&#10;Pro|$199|month|15 pages, Priority support, Analytics|true&#10;Enterprise|$399|month|Unlimited pages, 24/7 support, Custom features|false"
+                rows={6}
+              />
+            </div>
+          </div>
+        )
+
       default:
         return (
           <div className="text-center py-8 text-gray-500">
@@ -312,9 +797,12 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
                     <SelectContent>
                       {sectionTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
-                          <div>
-                            <div className="font-medium">{type.label}</div>
-                            <div className="text-sm text-gray-500">{type.description}</div>
+                          <div className="flex items-center space-x-3">
+                            <span className="text-lg">{type.icon}</span>
+                            <div>
+                              <div className="font-medium">{type.label}</div>
+                              <div className="text-sm text-gray-500">{type.description}</div>
+                            </div>
                           </div>
                         </SelectItem>
                       ))}
