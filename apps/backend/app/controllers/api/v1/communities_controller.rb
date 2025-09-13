@@ -14,6 +14,25 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     render_success(communities, CommunitySerializer, options)
   end
 
+  # GET /api/v1/communities/by-domain/:domain
+  def by_domain
+    domain = params[:domain]
+    @community = Community.find_by(domain: domain, is_enabled: true)
+    
+    unless @community
+      render json: ApplicationSerializer.error("Community not found for domain: #{domain}", {}, "not_found"), status: :not_found
+      return
+    end
+    
+    options = {}
+    options[:include_marketplace_configuration] = true
+    options[:include_landing_page] = true
+    options[:include_topbar] = true
+    options[:include_footer] = true
+    
+    render_success(@community, CommunitySerializer, options)
+  end
+
   # GET /api/v1/communities/:id
   def show
     options = {}

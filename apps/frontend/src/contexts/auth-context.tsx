@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (credentials: LoginCredentials) => {
     try {
       const response = await apiClient.post<{ data: { user: User; token: string } }>(
-        '/auth/sign_in',
+        '/api/v1/auth/sign_in',
         { user: credentials }
       )
       
@@ -76,6 +76,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('authToken', token)
       setUser(user)
+      
+      // Fetch community data if user has community_id
+      if (user.community_id) {
+        try {
+          const communityResponse = await apiClient.get<{ data: Community }>(
+            `/api/v1/communities/${user.community_id}`
+          )
+          const community = communityResponse.data
+          setCommunity(community)
+          localStorage.setItem('community', JSON.stringify(community))
+        } catch (error) {
+          console.error('Failed to fetch community after login:', error)
+        }
+      }
     } catch (error: any) {
       if (error.response?.data?.status?.message) {
         throw new Error(error.response.data.status.message)
@@ -87,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (credentials: RegisterCredentials) => {
     try {
       const response = await apiClient.post<{ data: { user: User; token: string } }>(
-        '/auth/sign_up',
+        '/api/v1/auth/sign_up',
         { user: credentials }
       )
       
@@ -112,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await apiClient.delete('/auth/sign_out')
+      await apiClient.delete('/api/v1/auth/sign_out')
     } catch (error) {
       console.error('Logout request failed:', error)
     } finally {

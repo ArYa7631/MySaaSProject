@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState, useCallback, useMemo } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/shared'
 import { LandingPageService } from '@/services/landing-page.service'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/auth-context'
+import { useCommunityContext } from '@/hooks/use-community-context'
 
 interface UseLandingPageStateReturn {
   // Data
@@ -13,16 +14,16 @@ interface UseLandingPageStateReturn {
   marketplaceConfig: MarketplaceConfiguration | null
   isLoading: boolean
   isError: boolean
-  
+
   // Section Management
   addSection: (section: LandingPageSection) => Promise<void>
   updateSection: (id: string, updates: Partial<LandingPageSection>) => Promise<void>
   deleteSection: (id: string) => Promise<void>
   reorderSections: (newOrder: string[]) => Promise<void>
-  
+
   // Marketplace Configuration
   updateMarketplaceConfig: (updates: Partial<MarketplaceConfiguration>) => Promise<void>
-  
+
   // UI State
   isEditing: boolean
   setIsEditing: (editing: boolean) => void
@@ -34,52 +35,35 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
   const queryClient = useQueryClient()
   const { toast } = useToast()
   const { user } = useAuth()
-  
+  const { community, isLoading: communityLoading, isError: communityError } = useCommunityContext()
+
   // UI State
   const [isEditing, setIsEditing] = useState(false)
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null)
 
-  // Fetch sections
-  const {
-    data: sections = [],
-    isLoading: sectionsLoading,
-    isError: sectionsError,
-  } = useQuery({
-    queryKey: ['landing-page-sections', user?.community_id || 3],
-    queryFn: () => {
-      const communityId = user?.community_id || 3 // Use community ID 3 for development
-      console.log('Fetching sections for community ID:', communityId)
-      return LandingPageService.getSections(communityId)
-    },
-    enabled: true, // Always enabled for development
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
+  // Extract data directly from community object - much more efficient!
+  const sections = useMemo(() => {
+    return community?.landing_page?.sections || community?.landing_page?.content || []
+  }, [community?.landing_page])
 
-  // Fetch marketplace configuration
-  const {
-    data: marketplaceConfig = null,
-    isLoading: configLoading,
-    isError: configError,
-  } = useQuery({
-    queryKey: ['marketplace-configuration', user?.community_id || 3],
-    queryFn: () => LandingPageService.getMarketplaceConfiguration(user?.community_id || 3),
-    enabled: true, // Always enabled for development
-    staleTime: 10 * 60 * 1000, // 10 minutes
-  })
+  const marketplaceConfig = useMemo(() => {
+    return community?.marketplace_configuration || null
+  }, [community?.marketplace_configuration])
+
+  // Use community loading and error states
+  const isLoading = communityLoading
+  const isError = communityError
 
   // Add section mutation
   const addSectionMutation = useMutation({
     mutationFn: async (section: LandingPageSection) => {
-      const communityId = user?.community_id || 3
-      console.log('Adding section mutation - Community ID:', communityId)
-      console.log('Current sections:', sections)
-      console.log('New section:', section)
+      if (!community?.id) throw new Error('No community found')
       const updatedSections = [...sections, section]
-      console.log('Updated sections array:', updatedSections)
-      return LandingPageService.updateSections(communityId, updatedSections)
+      await LandingPageService.updateSections(community.id, updatedSections)
+      // Invalidate community query to refetch the updated data
+      queryClient.invalidateQueries({ queryKey: ['community-by-domain'] })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['landing-page-sections'] })
       toast({
         title: 'Section Added',
         description: 'New section has been added successfully.',
@@ -98,14 +82,14 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
   // Update section mutation
   const updateSectionMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<LandingPageSection> }) => {
-      const communityId = user?.community_id || 3
+      if (!community?.id) throw new Error('No community found')
       const updatedSections = sections.map((section: LandingPageSection) =>
         section.id === id ? { ...section, ...updates } : section
       )
-      return LandingPageService.updateSections(communityId, updatedSections)
+      await LandingPageService.updateSections(community.id, updatedSections)
+      queryClient.invalidateQueries({ queryKey: ['community-by-domain'] })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['landing-page-sections'] })
       toast({
         title: 'Section Updated',
         description: 'Section has been updated successfully.',
@@ -124,12 +108,12 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
   // Delete section mutation
   const deleteSectionMutation = useMutation({
     mutationFn: async (id: string) => {
-      const communityId = user?.community_id || 3
+      if (!community?.id) throw new Error('No community found')
       const updatedSections = sections.filter((section: LandingPageSection) => section.id !== id)
-      return LandingPageService.updateSections(communityId, updatedSections)
+      await LandingPageService.updateSections(community.id, updatedSections)
+      queryClient.invalidateQueries({ queryKey: ['community-by-domain'] })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['landing-page-sections'] })
       setSelectedSectionId(null)
       toast({
         title: 'Section Deleted',
@@ -149,14 +133,14 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
   // Reorder sections mutation
   const reorderSectionsMutation = useMutation({
     mutationFn: async (newOrder: string[]) => {
-      const communityId = user?.community_id || 3
-      const reorderedSections = newOrder.map(id => 
+      if (!community?.id) throw new Error('No community found')
+      const reorderedSections = newOrder.map(id =>
         sections.find((section: LandingPageSection) => section.id === id)
       ).filter(Boolean) as LandingPageSection[]
-      return LandingPageService.updateSections(communityId, reorderedSections)
+      await LandingPageService.updateSections(community.id, reorderedSections)
+      queryClient.invalidateQueries({ queryKey: ['community-by-domain'] })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['landing-page-sections'] })
       toast({
         title: 'Sections Reordered',
         description: 'Section order has been updated successfully.',
@@ -175,13 +159,13 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
   // Update marketplace configuration mutation
   const updateMarketplaceConfigMutation = useMutation({
     mutationFn: async (updates: Partial<MarketplaceConfiguration>) => {
-      const communityId = user?.community_id || 3
+      if (!community?.id) throw new Error('No community found')
       if (!marketplaceConfig) throw new Error('No marketplace configuration found')
       const updatedConfig = { ...marketplaceConfig, ...updates }
-      return LandingPageService.updateMarketplaceConfiguration(communityId, updatedConfig)
+      await LandingPageService.updateMarketplaceConfiguration(community.id, updatedConfig)
+      queryClient.invalidateQueries({ queryKey: ['community-by-domain'] })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['marketplace-configuration'] })
       toast({
         title: 'Configuration Updated',
         description: 'Marketplace configuration has been updated successfully.',
@@ -222,18 +206,18 @@ export const useLandingPageState = (): UseLandingPageStateReturn => {
     // Data
     sections,
     marketplaceConfig,
-    isLoading: sectionsLoading || configLoading,
-    isError: sectionsError || configError,
-    
+    isLoading,
+    isError,
+
     // Section Management
     addSection,
     updateSection,
     deleteSection,
     reorderSections,
-    
+
     // Marketplace Configuration
     updateMarketplaceConfig,
-    
+
     // UI State
     isEditing,
     setIsEditing,

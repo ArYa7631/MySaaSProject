@@ -2,7 +2,7 @@ class Api::V1::BaseController < ApplicationController
   respond_to :json
   
   # Skip authentication for public endpoints
-  skip_before_action :authenticate_user!, only: [:index, :show]
+  skip_before_action :authenticate_user!, only: [:index, :show, :by_domain]
 
   # Error handling
   rescue_from ActiveRecord::RecordNotFound, with: :not_found

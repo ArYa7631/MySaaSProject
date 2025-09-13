@@ -12,11 +12,21 @@ class Topbar < ApplicationRecord
 
   # Instance methods
   def navigation_items
-    navigation['items'] || []
+    # Handle both array format and object format
+    if navigation.is_a?(Array)
+      navigation
+    else
+      navigation['items'] || []
+    end
   end
 
   def profile_settings
-    profile['settings'] || {}
+    # Handle both array format and object format
+    if profile.is_a?(Array)
+      profile
+    else
+      profile['settings'] || {}
+    end
   end
 
   def show_language_selector?

@@ -10,7 +10,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
       - NEXT_PUBLIC_APP_URL=http://localhost:3000
     depends_on:
       - backend
@@ -35,6 +35,11 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - S3_ACCESS_KEY_ID=AKIARRNBJWEDWJTUIZGA
+      - S3_SECRET_ACCESS_KEY=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
+      - S3_BUCKET=aryasoftwaretech.test.bucket
+      - S3_REGION=ap-southeast-2
+      - S3_IMAGE_FOLDER_PATH=images
     depends_on:
       - postgres
       - redis

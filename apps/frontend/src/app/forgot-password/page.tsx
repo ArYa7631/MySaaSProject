@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
     setMessage('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot_password`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/forgot_password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

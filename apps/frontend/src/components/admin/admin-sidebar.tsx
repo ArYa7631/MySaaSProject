@@ -11,7 +11,8 @@ import {
   Users, 
   Globe,
   Palette,
-  BarChart3
+  BarChart3,
+  Image
 } from 'lucide-react'
 
 const navigation = [
@@ -39,6 +40,11 @@ const navigation = [
     name: 'Analytics',
     href: '/admin/analytics',
     icon: BarChart3,
+  },
+  {
+    name: 'Images',
+    href: '/admin/images',
+    icon: Image,
   },
 ]
 

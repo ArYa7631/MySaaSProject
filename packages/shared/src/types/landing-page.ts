@@ -1,7 +1,9 @@
 export interface LandingPageSection {
   id: string;
   name: string;
+  type: string;
   description: string;
+  content: Record<string, any>;
   [key: string]: any;
 }
 

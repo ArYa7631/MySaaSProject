@@ -2,11 +2,16 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { useToast } from '@/hooks/use-toast'
 
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1`
 const API_TIMEOUT = 30000 // 30 seconds
 
 // Request/Response interceptors
 const requestInterceptor = (config: AxiosRequestConfig) => {
+  // Debug: Log the full URL being constructed
+  console.log('API Request - Base URL:', config.baseURL)
+  console.log('API Request - URL path:', config.url)
+  console.log('API Request - Full URL:', `${config.baseURL}${config.url}`)
+  
   // Add auth token if available
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('authToken')

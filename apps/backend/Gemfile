@@ -21,6 +21,9 @@ gem "active_model_serializers", "~> 0.10.0"
 # Environment and configuration
 gem "dotenv-rails"
 
+# AWS S3 for file uploads
+gem "aws-sdk-s3", "~> 1.0"
+
 # Development and test gems
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]

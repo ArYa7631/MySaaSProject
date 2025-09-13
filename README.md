@@ -555,6 +555,8 @@ curl http://localhost:3000
 docker exec mysaasproject-backend-1 rails db:migrate:status
 ```
 
+docker-compose -f docker-compose.dev.yml exec backend rails console
+
 #### Troubleshooting
 ```bash
 # Restart everything

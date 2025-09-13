@@ -59,18 +59,19 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   }
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-800">
+    <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             {title}
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             {description}
           </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full mt-6"></div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100 dark:border-gray-700">
           {submitStatus === 'success' && (
             <Alert className="mb-6">
               <AlertDescription>
@@ -140,7 +141,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full md:w-auto"
+                className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>

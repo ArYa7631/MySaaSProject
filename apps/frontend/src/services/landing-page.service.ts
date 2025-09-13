@@ -4,18 +4,19 @@ import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/sha
 export class LandingPageService {
   static async getSections(communityId: number): Promise<LandingPageSection[]> {
     console.log('LandingPageService.getSections - Community ID:', communityId)
-    const response = await apiClientMethods.get<{ sections: LandingPageSection[] }>(
+    const response = await apiClientMethods.get<{ landing_page: { sections: LandingPageSection[] } }>(
       `/communities/${communityId}/landing_page`
     )
     console.log('LandingPageService.getSections - Response:', response)
-    return response.data.sections || []
+    // The API returns sections in the landing_page.sections property
+    return response.data.landing_page?.sections || []
   }
 
   static async getMarketplaceConfiguration(communityId: number): Promise<MarketplaceConfiguration> {
-    const response = await apiClientMethods.get<MarketplaceConfiguration>(
+    const response = await apiClientMethods.get<{ marketplace_configuration: MarketplaceConfiguration }>(
       `/communities/${communityId}/marketplace_configuration`
     )
-    return response.data
+    return response.data.marketplace_configuration || response.data
   }
 
   static async updateSections(communityId: number, sections: LandingPageSection[]): Promise<void> {
