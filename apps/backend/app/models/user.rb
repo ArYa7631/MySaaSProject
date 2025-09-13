@@ -44,7 +44,7 @@ class User < ApplicationRecord
   end
 
   def generate_jwt
-    JWT.encode(jwt_payload, Rails.application.credentials.secret_key_base, 'HS256')
+    JWT.encode(jwt_payload, ENV.fetch('JWT_SECRET_KEY'), 'HS256')
   end
 end
 

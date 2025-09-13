@@ -28,17 +28,7 @@
 # parameters by using an attr_accessible or attr_protected declaration.
 # config.active_record.whitelist_attributes = true
 
-# Enable the asset pipeline
-# config.assets.enabled = true
-
-# Version of your assets, change this if you want to expire all your assets
-# config.assets.version = '1.0'
-
-# Add additional assets to the asset load path
-# config.assets.paths << Emoji.images_path
-
-# Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-# config.assets.precompile += %w( search.js )
+# Asset pipeline configurations moved to assets.rb initializer
 
 # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
 # the I18n.default_locale when a translation can not be found)

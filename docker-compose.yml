@@ -1,73 +1,105 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: mysaasproject_development
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+  # Frontend Application
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile.dev
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:3001/api/v1
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    depends_on:
+      - backend
+    networks:
+      - mysaasproject-network
+    restart: unless-stopped
 
+  # Backend API
   backend:
     build:
       context: ./apps/backend
       dockerfile: Dockerfile
-    environment:
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/mysaasproject_development
-      RAILS_ENV: development
-      JWT_SECRET_KEY: your_jwt_secret_key_here
-      CORS_ORIGIN: http://localhost:3000
     ports:
       - "3001:3001"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./apps/backend:/app
-      - /app/tmp
-      - /app/log
-    command: ./bin/rails server -b 0.0.0.0 -p 3001
-
-  frontend:
-    build:
-      context: .
-      dockerfile: ./apps/frontend/Dockerfile
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3001
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-      - /app/apps/frontend/node_modules
-      - /app/apps/frontend/.next
+      - RAILS_ENV=production
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mysaasproject_production
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     depends_on:
+      - postgres
+      - redis
+    networks:
+      - mysaasproject-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=mysaasproject_production
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - mysaasproject-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mysaasproject-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - frontend
       - backend
-    command: yarn workspace @mysaasproject/frontend dev
+    networks:
+      - mysaasproject-network
+    restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
+  # Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - ./nginx/ssl:/etc/letsencrypt
+      - ./nginx/webroot:/var/www/html
+    command: certonly --webroot --webroot-path=/var/www/html --email admin@example.com --agree-tos --no-eff-email -d example.com -d www.example.com
+    depends_on:
+      - nginx
+    networks:
+      - mysaasproject-network
 
 volumes:
   postgres_data:
-  pgadmin_data:
+  redis_data:
+
+networks:
+  mysaasproject-network:
+    driver: bridge
 
 

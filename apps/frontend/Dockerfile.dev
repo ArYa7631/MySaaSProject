@@ -1,0 +1,35 @@
+# Use the official Node.js runtime as the base image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy root package.json and yarn.lock for workspace setup
+COPY package.json yarn.lock ./
+
+# Copy the shared package
+COPY packages/shared ./packages/shared
+
+# Copy frontend package.json
+COPY apps/frontend/package.json ./apps/frontend/
+
+# Install dependencies at workspace level
+RUN yarn install
+
+# Copy the rest of the frontend application
+COPY apps/frontend ./apps/frontend
+
+# Build the shared package
+RUN yarn workspace @mysaasproject/shared build
+
+# Set working directory to frontend
+WORKDIR /app/apps/frontend
+
+# Add node_modules/.bin to PATH
+ENV PATH /app/apps/frontend/node_modules/.bin:$PATH
+
+# Expose port
+EXPOSE 3000
+
+# Start the development server
+CMD ["yarn", "dev"]

@@ -25,18 +25,14 @@ Rails.application.routes.draw do
       
       # Public endpoints (no community context needed)
       resources :communities, only: [:index, :show]
+      
+      # Auth routes within v1 namespace
+      post 'auth/sign_up', to: 'registrations#create'
+      post 'auth/sign_in', to: 'sessions#create'
+      delete 'auth/sign_out', to: 'sessions#destroy'
+      post 'auth/forgot_password', to: 'password_resets#create'
+      put 'auth/reset_password', to: 'password_resets#update'
     end
-    
-    # Custom auth routes (no Devise complexity) - kept outside versioning for backward compatibility
-    post 'auth/sign_up', to: 'registrations#create'
-    post 'auth/sign_in', to: 'sessions#create'
-    delete 'auth/sign_out', to: 'sessions#destroy'
-  end
-
-  # Password reset routes with devise_scope
-  devise_scope :user do
-    post 'api/auth/forgot_password', to: 'api/password_resets#create'
-    put 'api/auth/reset_password', to: 'api/password_resets#update'
   end
 
   # Health check endpoint

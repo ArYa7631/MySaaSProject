@@ -14,7 +14,8 @@ class Api::RegistrationsController < ApplicationController
         render json: {
           status: { code: 200, message: 'Signed up successfully.' },
           data: {
-            user: user
+            user: user,
+            token: user.generate_jwt
           }
         }
       else
@@ -36,6 +37,6 @@ class Api::RegistrationsController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name)
   end
 end

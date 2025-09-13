@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
     setMessage('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/forgot_password`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot_password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
       <div className="max-w-md w-full space-y-8">
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Forgot Password</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">Forgot Password - Testoing</CardTitle>
             <CardDescription className="text-center">
               Enter your email address and we&apos;ll send you a link to reset your password.
             </CardDescription>

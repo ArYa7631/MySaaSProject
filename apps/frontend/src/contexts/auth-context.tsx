@@ -1,11 +1,12 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, LoginCredentials, RegisterCredentials } from '@mysaasproject/shared'
+import { User, LoginCredentials, RegisterCredentials, Community } from '@mysaasproject/shared'
 import { createApiClient } from '@mysaasproject/shared'
 
 interface AuthContextType {
   user: User | null
+  community: Community | null
   loading: boolean
   login: (credentials: LoginCredentials) => Promise<void>
   register: (credentials: RegisterCredentials) => Promise<void>
@@ -19,18 +20,45 @@ const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://loc
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [community, setCommunity] = useState<Community | null>(null)
   const [loading, setLoading] = useState(true)
 
   const checkAuth = async () => {
     try {
-      // For now, just check if user exists in localStorage
       const userData = localStorage.getItem('user')
-      if (userData) {
-        setUser(JSON.parse(userData))
+      const communityData = localStorage.getItem('community')
+      const token = localStorage.getItem('authToken')
+      
+      if (userData && token) {
+        const user = JSON.parse(userData)
+        setUser(user)
+        
+        // Fetch community data if user has community_id
+        if (user.community_id && !communityData) {
+          try {
+            const communityResponse = await apiClient.get<{ data: Community }>(
+              `/api/v1/communities/${user.community_id}`
+            )
+            const community = communityResponse.data
+            setCommunity(community)
+            localStorage.setItem('community', JSON.stringify(community))
+          } catch (error) {
+            console.error('Failed to fetch community:', error)
+          }
+        } else if (communityData) {
+          setCommunity(JSON.parse(communityData))
+        }
+      } else if (userData && !token) {
+        // User data exists but no token - clear everything
+        localStorage.removeItem('user')
+        localStorage.removeItem('community')
+        localStorage.removeItem('authToken')
       }
     } catch (error) {
       console.error('Auth check failed:', error)
       localStorage.removeItem('user')
+      localStorage.removeItem('community')
+      localStorage.removeItem('authToken')
     } finally {
       setLoading(false)
     }
@@ -38,14 +66,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: LoginCredentials) => {
     try {
-      const response = await apiClient.post<{ data: { user: User } }>(
-        '/api/auth/sign_in',
+      const response = await apiClient.post<{ data: { user: User; token: string } }>(
+        '/auth/sign_in',
         { user: credentials }
       )
       
-      const { user } = response.data
-      // Store user data in localStorage instead of using tokens
+      const { user, token } = response.data
+      // Store user data and token in localStorage
       localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('authToken', token)
       setUser(user)
     } catch (error: any) {
       if (error.response?.data?.status?.message) {
@@ -57,15 +86,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (credentials: RegisterCredentials) => {
     try {
-      const response = await apiClient.post<{ data: { user: User } }>(
-        '/api/auth/sign_up',
+      const response = await apiClient.post<{ data: { user: User; token: string } }>(
+        '/auth/sign_up',
         { user: credentials }
       )
       
-      const { user } = response.data
-      // Store user data in localStorage instead of using tokens
+      const { user, token } = response.data
+      
       localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('authToken', token)
       setUser(user)
+      // Note: Community will be created separately or fetched later
     } catch (error: any) {
       if (error.response?.data?.status?.message) {
         throw new Error(error.response.data.status.message)
@@ -81,13 +112,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await apiClient.delete('/api/auth/sign_out')
+      await apiClient.delete('/auth/sign_out')
     } catch (error) {
       console.error('Logout request failed:', error)
     } finally {
-      // Remove user data from localStorage
       localStorage.removeItem('user')
+      localStorage.removeItem('community')
+      localStorage.removeItem('authToken')
       setUser(null)
+      setCommunity(null)
     }
   }
 
@@ -97,6 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     user,
+    community,
     loading,
     login,
     register,

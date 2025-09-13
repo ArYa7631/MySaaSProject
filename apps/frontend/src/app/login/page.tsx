@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/contexts/auth-context'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -36,7 +36,7 @@ export default function LoginPage() {
     try {
       setError('')
       await login(data)
-      router.push('/dashboard')
+      router.push('/admin') // Redirect to admin instead of dashboard
     } catch (err: any) {
       setError(err.message || 'Login failed')
     }

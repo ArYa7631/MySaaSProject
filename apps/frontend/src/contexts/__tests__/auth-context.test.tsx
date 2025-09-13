@@ -92,7 +92,7 @@ describe('AuthContext', () => {
       })
       
       await waitFor(() => {
-        expect(mockApiClient.post).toHaveBeenCalledWith('/api/auth/sign_in', {
+        expect(mockApiClient.post).toHaveBeenCalledWith('/auth/sign_in', {
           user: { email: 'test@example.com', password: 'password' }
         })
       })
@@ -147,7 +147,7 @@ describe('AuthContext', () => {
       })
       
       await waitFor(() => {
-        expect(mockApiClient.post).toHaveBeenCalledWith('/api/auth/sign_up', {
+        expect(mockApiClient.post).toHaveBeenCalledWith('/auth/sign_up', {
           user: { email: 'test@example.com', password: 'password', password_confirmation: 'password' }
         })
       })
@@ -200,7 +200,7 @@ describe('AuthContext', () => {
       })
       
       await waitFor(() => {
-        expect(mockApiClient.delete).toHaveBeenCalledWith('/api/auth/sign_out')
+        expect(mockApiClient.delete).toHaveBeenCalledWith('/auth/sign_out')
       })
       
       expect(screen.getByTestId('user')).toHaveTextContent('no-user')

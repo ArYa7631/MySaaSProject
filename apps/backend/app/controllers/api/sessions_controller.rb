@@ -37,7 +37,8 @@ class Api::SessionsController < ApplicationController
         render json: {
           status: { code: 200, message: 'Signed in successfully.' },
           data: {
-            user: user
+            user: user,
+            token: user.generate_jwt
           }
         }
       else

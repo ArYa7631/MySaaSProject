@@ -1,0 +1,44 @@
+# Use bin/rails credentials:edit to modify the following settings.
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# Use Amazon S3 to store uploaded files.
+#
+# Add the aws-sdk-s3 gem to your Gemfile:
+#   gem "aws-sdk-s3", require: false
+#
+# Uncomment and edit the following if you have any other
+# service configuration options:
+#
+# amazon:
+#   service: S3
+#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
+#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
+#   region: your-region
+#   bucket: your-bucket-name
+
+# Remember not to checkin your GCS keyfile to a repository
+# google:
+#   service: GCS
+#   project: your-project
+#   credentials: <%= Rails.root.join("path/to/gcs.keyfile") %>
+#   bucket: your-bucket-name
+
+# Use bin/rails credentials:edit to modify the following settings.
+# azure:
+#   service: AzureStorage
+#   storage_account_name: your-storage-account-name
+#   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :access_key) %>
+#   container: your-container-name
+
+# Mirror the uploads to S3 and back to local files for caching.
+# Use bin/rails credentials:edit to modify the following settings.
+# mirror:
+#   service: Mirror
+#   primary: local
+#   mirrors:
+#     - amazon
+#     - google
+#     - azure
