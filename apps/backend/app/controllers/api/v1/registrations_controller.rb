@@ -1,10 +1,8 @@
 class Api::V1::RegistrationsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:create]
+  skip_before_action :authenticate_user_from_jwt!, only: [:create]
   respond_to :json
 
   def create
-    Rails.logger.info "=== SIGN UP DEBUG ==="
-    Rails.logger.info "Params: #{params.inspect}"
 
     begin
       user = User.new(user_params)

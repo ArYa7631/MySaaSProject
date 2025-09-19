@@ -1,5 +1,5 @@
 class Api::V1::ImagesController < Api::V1::BaseController
-  before_action :authenticate_user!
+  # Authentication is handled by ApplicationController via JwtAuthentication concern
 
   # POST /api/v1/images/upload
   def upload
@@ -22,7 +22,7 @@ class Api::V1::ImagesController < Api::V1::BaseController
       return
     end
 
-    # Upload to S3
+    # Upload to S3 (or local storage in development)
     result = S3Service.upload_image(params[:image], params[:folder])
 
     if result[:success]
@@ -66,22 +66,4 @@ class Api::V1::ImagesController < Api::V1::BaseController
     end
   end
 
-  # GET /api/v1/images/presigned-url
-  def presigned_url
-    key = params[:key]
-    expires_in = params[:expires_in]&.to_i || 3600
-
-    unless key.present?
-      render_error("Key parameter is required", {}, :bad_request)
-      return
-    end
-
-    result = S3Service.generate_presigned_url(key, expires_in)
-
-    if result[:success]
-      render_success({ url: result[:url] })
-    else
-      render_error("Failed to generate presigned URL: #{result[:error]}", {}, :unprocessable_entity)
-    end
-  end
 end

@@ -6,15 +6,15 @@ class ApplicationSerializer
   end
 
   def as_json
-    if @object.respond_to?(:map)
-      # Collection
+    if @object.respond_to?(:map) && !@object.is_a?(Hash)
+      # Collection (but not a hash)
       {
         status: "success",
         data: @object.map { |item| serialize_single(item) },
         meta: build_meta
       }
     else
-      # Single object
+      # Single object or hash
       {
         status: "success",
         data: serialize_single(@object)

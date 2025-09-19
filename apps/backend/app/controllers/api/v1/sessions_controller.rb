@@ -1,10 +1,8 @@
 class Api::V1::SessionsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:create]
+  skip_before_action :authenticate_user_from_jwt!, only: [:create]
   respond_to :json
 
   def create
-    Rails.logger.info "=== SIGN IN DEBUG ==="
-    Rails.logger.info "Params: #{params.inspect}"
 
     begin
       # Check if user params exist

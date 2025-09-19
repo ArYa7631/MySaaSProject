@@ -16,7 +16,6 @@ export const LandingPageContent: React.FC = () => {
   if (isLoading || communityLoading) {
     return <LandingPageSkeleton />
   }
-  // debugger
 
   if (isError || communityError || !community) {
     return (

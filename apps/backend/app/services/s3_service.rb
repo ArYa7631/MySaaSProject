@@ -3,6 +3,17 @@ class S3Service
     def upload_image(file, folder_path = nil)
       return { success: false, error: 'No file provided' } unless file
 
+      # Use local storage if AWS credentials are not configured or are placeholder values
+      if ENV['S3_ACCESS_KEY_ID'].blank? || 
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'].blank? ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_key'
+        Rails.logger.info "AWS credentials not configured, using local storage"
+        return upload_to_local_storage(file, folder_path)
+      end
+
       begin
         # Generate unique filename
         filename = generate_filename(file.original_filename)
@@ -38,8 +49,52 @@ class S3Service
       end
     end
 
+    def upload_to_local_storage(file, folder_path = nil)
+      begin
+        # Create uploads directory if it doesn't exist
+        uploads_dir = Rails.root.join('public', 'uploads')
+        FileUtils.mkdir_p(uploads_dir)
+
+        # Generate unique filename
+        filename = generate_filename(file.original_filename)
+        file_path = uploads_dir.join(filename)
+
+        # Save file to local storage
+        File.open(file_path, 'wb') do |f|
+          f.write(file.read)
+        end
+
+        # Generate public URL
+        base_url = ENV['BACKEND_URL'] || 'http://localhost:3001'
+        url = "#{base_url}/uploads/#{filename}"
+
+        {
+          success: true,
+          url: url,
+          key: filename,
+          filename: filename,
+          content_type: file.content_type,
+          size: file.size
+        }
+      rescue => e
+        Rails.logger.error "Local upload error: #{e.message}"
+        { success: false, error: 'Upload failed' }
+      end
+    end
+
     def delete_image(key)
       return { success: false, error: 'No key provided' } unless key
+
+      # Use local storage if AWS credentials are not configured
+      if ENV['S3_ACCESS_KEY_ID'].blank? || 
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'].blank? ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_key'
+        Rails.logger.info "AWS credentials not configured, deleting from local storage"
+        return delete_local_image(key)
+      end
 
       begin
         S3_CLIENT.delete_object(
@@ -58,6 +113,17 @@ class S3Service
     end
 
     def list_images(folder_path = nil)
+      # Use local storage if AWS credentials are not configured
+      if ENV['S3_ACCESS_KEY_ID'].blank? || 
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
+         ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'].blank? ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_access_key' ||
+         ENV['S3_SECRET_ACCESS_KEY'] == 'your_aws_secret_key'
+        Rails.logger.info "AWS credentials not configured, listing local storage"
+        return list_local_images(folder_path)
+      end
+
       begin
         folder = folder_path || S3_IMAGE_FOLDER_PATH
         prefix = "#{folder}/"
@@ -87,15 +153,45 @@ class S3Service
       end
     end
 
-    def generate_presigned_url(key, expires_in = 3600)
+
+    def list_local_images(folder_path = nil)
       begin
-        signer = Aws::S3::Presigner.new(client: S3_CLIENT)
-        url = signer.presigned_url(:get_object, bucket: S3_BUCKET, key: key, expires_in: expires_in)
-        
-        { success: true, url: url }
+        uploads_dir = Rails.root.join('public', 'uploads')
+        return { success: true, images: [] } unless Dir.exist?(uploads_dir)
+
+        images = Dir.glob(File.join(uploads_dir, '*')).map do |file_path|
+          next unless File.file?(file_path)
+          
+          stat = File.stat(file_path)
+          {
+            key: File.basename(file_path),
+            url: "#{ENV['BACKEND_URL'] || 'http://localhost:3001'}/uploads/#{File.basename(file_path)}",
+            filename: File.basename(file_path),
+            size: stat.size,
+            last_modified: stat.mtime
+          }
+        end.compact
+
+        { success: true, images: images }
       rescue => e
-        Rails.logger.error "Presigned URL error: #{e.message}"
-        { success: false, error: e.message }
+        Rails.logger.error "Local list error: #{e.message}"
+        { success: false, error: 'List failed' }
+      end
+    end
+
+    def delete_local_image(key)
+      begin
+        file_path = Rails.root.join('public', 'uploads', key)
+        
+        if File.exist?(file_path)
+          File.delete(file_path)
+          { success: true }
+        else
+          { success: false, error: 'File not found' }
+        end
+      rescue => e
+        Rails.logger.error "Local delete error: #{e.message}"
+        { success: false, error: 'Delete failed' }
       end
     end
 

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '@/contexts/auth-context'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const { login } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const {
     register,
@@ -36,7 +37,10 @@ export default function LoginPage() {
     try {
       setError('')
       await login(data)
-      router.push('/admin') // Redirect to admin instead of dashboard
+      
+      // Redirect to the intended page or default to admin dashboard
+      const redirectTo = searchParams.get('redirect') || '/admin'
+      router.push(redirectTo)
     } catch (err: any) {
       setError(err.message || 'Login failed')
     }

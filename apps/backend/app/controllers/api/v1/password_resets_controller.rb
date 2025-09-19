@@ -1,5 +1,5 @@
 class Api::V1::PasswordResetsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:create, :update]
+  skip_before_action :authenticate_user_from_jwt!, only: [:create, :update]
 
   # POST /api/v1/auth/forgot_password
   def create

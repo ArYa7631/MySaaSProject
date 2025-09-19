@@ -12,6 +12,11 @@ const requestInterceptor = (config: AxiosRequestConfig) => {
   console.log('API Request - URL path:', config.url)
   console.log('API Request - Full URL:', `${config.baseURL}${config.url}`)
   
+  // Don't set Content-Type for FormData - let browser handle it
+  if (config.data instanceof FormData) {
+    delete config.headers?.['Content-Type']
+  }
+  
   // Add auth token if available
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('authToken')
@@ -40,6 +45,10 @@ const requestInterceptor = (config: AxiosRequestConfig) => {
 const responseInterceptor = (response: AxiosResponse) => {
   // Log response for debugging
   console.debug(`API Request completed:`, response.config.url)
+  console.debug('Response status:', response.status)
+  console.debug('Response headers:', response.headers)
+  console.debug('Response data type:', typeof response.data)
+  console.debug('Response data preview:', response.data)
   return response
 }
 
@@ -53,6 +62,13 @@ const errorInterceptor = (error: AxiosError) => {
     status: response?.status,
     message: error.message,
   })
+  
+  // Log detailed error information
+  if (response) {
+    console.error('Error response data:', response.data)
+    console.error('Error response headers:', response.headers)
+    console.error('Error response status text:', response.statusText)
+  }
 
   // Handle different error types
   if (response) {
@@ -82,7 +98,7 @@ const errorInterceptor = (error: AxiosError) => {
 
       case 422:
         // Validation error
-        const validationErrors = data?.errors || data?.message
+        const validationErrors = (data as any)?.errors || (data as any)?.message
         if (validationErrors) {
           console.error('Validation Error:', Array.isArray(validationErrors) 
             ? validationErrors.join(', ') 
@@ -97,7 +113,7 @@ const errorInterceptor = (error: AxiosError) => {
 
       default:
         // Other errors
-        const errorMessage = data?.message || 'An error occurred'
+        const errorMessage = (data as any)?.message || 'An error occurred'
         console.error('Error:', errorMessage)
     }
   } else if (request) {
@@ -126,9 +142,10 @@ apiClient.interceptors.response.use(responseInterceptor, errorInterceptor)
 
 // API Response types
 export interface ApiResponse<T = any> {
+  status: 'success' | 'error'
   data: T
   message?: string
-  success: boolean
+  errors?: Record<string, string[]>
 }
 
 export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
@@ -174,9 +191,6 @@ export const apiClientMethods = {
     formData.append('file', file)
 
     return apiClient.post(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
       onUploadProgress: (progressEvent) => {
         if (onProgress && progressEvent.total) {
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)

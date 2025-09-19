@@ -104,7 +104,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
     document.body.removeChild(link)
   }
 
-  const filteredImages = images.filter(image =>
+  const filteredImages = (images || []).filter(image =>
     image.filename.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -239,7 +239,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
 
         {filteredImages.length > 0 && (
           <div className="mt-4 text-center text-sm text-gray-500">
-            Showing {filteredImages.length} of {images.length} images
+            Showing {filteredImages.length} of {images?.length || 0} images
           </div>
         )}
       </CardContent>

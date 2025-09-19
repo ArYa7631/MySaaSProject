@@ -27,7 +27,7 @@ export const Gallery: React.FC<GalleryProps> = ({
   const handleImageUpload = (response: ImageUploadResponse) => {
     const newImage = {
       url: response.url,
-      alt: response.filename
+      alt: response.filename || `Gallery image ${images.length + 1}`
     }
     const updatedImages = [...images, newImage]
     onUpdate?.(updatedImages)
@@ -36,7 +36,7 @@ export const Gallery: React.FC<GalleryProps> = ({
   const handleImageSelect = (image: ImageItem) => {
     const newImage = {
       url: image.url,
-      alt: image.filename
+      alt: image.filename || `Gallery image ${images.length + 1}`
     }
     const updatedImages = [...images, newImage]
     onUpdate?.(updatedImages)
@@ -108,6 +108,7 @@ export const Gallery: React.FC<GalleryProps> = ({
                         src={image.url}
                         alt={image.alt || `Gallery image ${index + 1}`}
                         className="w-full h-64 object-cover"
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Button
@@ -164,6 +165,7 @@ export const Gallery: React.FC<GalleryProps> = ({
                     src={image.url}
                     alt={image.alt || `Gallery image ${index + 1}`}
                     className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">

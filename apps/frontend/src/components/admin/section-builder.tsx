@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Save, X, Eye } from 'lucide-react'
 import { LandingPageSection } from '@mysaasproject/shared'
+import { ImageUpload } from '@/components/ui/image-upload'
+import { ImageUploadResponse } from '@/services/image.service'
 
 interface SectionBuilderProps {
   onSave: (section: LandingPageSection) => void
@@ -63,6 +65,19 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
         [field]: value
       }
     }))
+  }
+
+  const handleImageUpload = (field: string, response: ImageUploadResponse) => {
+    handleContentChange(field, response.url)
+  }
+
+  const handleMultipleImageUpload = (field: string, response: ImageUploadResponse) => {
+    const currentImages = sectionData.content[field] || []
+    const newImages = [...currentImages, { 
+      url: response.url, 
+      alt: response.filename || `Gallery image ${currentImages.length + 1}` 
+    }]
+    handleContentChange(field, newImages)
   }
 
   const handleSave = () => {
@@ -165,13 +180,27 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
             {sectionData.type === 'HeroSection' && (
               <>
                 <div>
-                  <Label htmlFor="backgroundImage">Background Image URL (optional)</Label>
-                  <Input
-                    id="backgroundImage"
-                    value={sectionData.content.backgroundImage || ''}
-                    onChange={(e) => handleContentChange('backgroundImage', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <Label>Background Image</Label>
+                  <div className="space-y-2">
+                    <ImageUpload
+                      onUploadSuccess={(response) => handleImageUpload('backgroundImage', response)}
+                      folder="hero"
+                      maxFiles={1}
+                      maxSizeMB={10}
+                      className="mb-2"
+                    />
+                    {sectionData.content.backgroundImage && (
+                      <div className="mt-2">
+                        <Label htmlFor="backgroundImageUrl">Or enter URL manually:</Label>
+                        <Input
+                          id="backgroundImageUrl"
+                          value={sectionData.content.backgroundImage || ''}
+                          onChange={(e) => handleContentChange('backgroundImage', e.target.value)}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="videoUrl">Video URL (optional)</Label>
@@ -200,18 +229,83 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="images">Image URLs (one per line)</Label>
-              <Textarea
-                id="images"
-                value={sectionData.content.images?.map((img: any) => img.url).join('\n') || ''}
-                onChange={(e) => {
-                  const urls = e.target.value.split('\n').filter(url => url.trim())
-                  const images = urls.map(url => ({ url: url.trim() }))
-                  handleContentChange('images', images)
-                }}
-                placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-                rows={5}
-              />
+              <Label>Gallery Images</Label>
+              <div className="space-y-2">
+                <ImageUpload
+                  onUploadSuccess={(response) => handleMultipleImageUpload('images', response)}
+                  folder="gallery"
+                  maxFiles={10}
+                  maxSizeMB={10}
+                  className="mb-2"
+                />
+                
+                {/* Current Images with Alt Text Editing */}
+                {sectionData.content.images && sectionData.content.images.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <Label>Current Images ({sectionData.content.images.length})</Label>
+                    {sectionData.content.images.map((img: any, index: number) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
+                        <img 
+                          src={img.url} 
+                          alt={img.alt || `Gallery image ${index + 1}`}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div className="flex-1 space-y-2">
+                          <Input
+                            value={img.url || ''}
+                            onChange={(e) => {
+                              const updatedImages = [...sectionData.content.images]
+                              updatedImages[index] = { ...updatedImages[index], url: e.target.value }
+                              handleContentChange('images', updatedImages)
+                            }}
+                            placeholder="Image URL"
+                            className="text-sm"
+                          />
+                          <Input
+                            value={img.alt || ''}
+                            onChange={(e) => {
+                              const updatedImages = [...sectionData.content.images]
+                              updatedImages[index] = { ...updatedImages[index], alt: e.target.value }
+                              handleContentChange('images', updatedImages)
+                            }}
+                            placeholder="Alt text (optional)"
+                            className="text-sm"
+                          />
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const updatedImages = sectionData.content.images.filter((_: any, i: number) => i !== index)
+                            handleContentChange('images', updatedImages)
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Manual URL Input */}
+                <div className="mt-2">
+                  <Label htmlFor="images">Or enter URLs manually (one per line):</Label>
+                  <Textarea
+                    id="images"
+                    value={sectionData.content.images?.map((img: any) => img.url).join('\n') || ''}
+                    onChange={(e) => {
+                      const urls = e.target.value.split('\n').filter(url => url.trim())
+                      const images = urls.map((url, index) => ({ 
+                        url: url.trim(), 
+                        alt: `Gallery image ${index + 1}` 
+                      }))
+                      handleContentChange('images', images)
+                    }}
+                    placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+                    rows={3}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )
@@ -264,13 +358,27 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="imageURL">Image URL</Label>
-              <Input
-                id="imageURL"
-                value={sectionData.content.imageURL || ''}
-                onChange={(e) => handleContentChange('imageURL', e.target.value)}
-                placeholder="https://example.com/image.jpg"
-              />
+              <Label>Image</Label>
+              <div className="space-y-2">
+                <ImageUpload
+                  onUploadSuccess={(response) => handleImageUpload('imageURL', response)}
+                  folder="sections"
+                  maxFiles={1}
+                  maxSizeMB={10}
+                  className="mb-2"
+                />
+                {sectionData.content.imageURL && (
+                  <div className="mt-2">
+                    <Label htmlFor="imageURL">Or enter URL manually:</Label>
+                    <Input
+                      id="imageURL"
+                      value={sectionData.content.imageURL || ''}
+                      onChange={(e) => handleContentChange('imageURL', e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -327,13 +435,27 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="thumbnailUrl">Thumbnail URL (optional)</Label>
-              <Input
-                id="thumbnailUrl"
-                value={sectionData.content.thumbnailUrl || ''}
-                onChange={(e) => handleContentChange('thumbnailUrl', e.target.value)}
-                placeholder="https://example.com/thumbnail.jpg"
-              />
+              <Label>Video Thumbnail (optional)</Label>
+              <div className="space-y-2">
+                <ImageUpload
+                  onUploadSuccess={(response) => handleImageUpload('thumbnailUrl', response)}
+                  folder="videos"
+                  maxFiles={1}
+                  maxSizeMB={10}
+                  className="mb-2"
+                />
+                {sectionData.content.thumbnailUrl && (
+                  <div className="mt-2">
+                    <Label htmlFor="thumbnailUrl">Or enter URL manually:</Label>
+                    <Input
+                      id="thumbnailUrl"
+                      value={sectionData.content.thumbnailUrl || ''}
+                      onChange={(e) => handleContentChange('thumbnailUrl', e.target.value)}
+                      placeholder="https://example.com/thumbnail.jpg"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )
@@ -403,21 +525,42 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="teamMembers">Team Members (one per line, format: "Name|Role|Bio|ImageURL")</Label>
-              <Textarea
-                id="teamMembers"
-                value={sectionData.content.members?.map((member: any) => `${member.name}|${member.role}|${member.bio}|${member.imageUrl}`).join('\n') || ''}
-                onChange={(e) => {
-                  const lines = e.target.value.split('\n').filter(line => line.trim())
-                  const members = lines.map(line => {
-                    const [name, role, bio, imageUrl] = line.split('|')
-                    return { name: name?.trim(), role: role?.trim(), bio: bio?.trim(), imageUrl: imageUrl?.trim() }
-                  })
-                  handleContentChange('members', members)
-                }}
-                placeholder="John Doe|CEO|Visionary leader with 10+ years experience|https://example.com/john.jpg&#10;Jane Smith|CTO|Technical expert and innovation driver|https://example.com/jane.jpg"
-                rows={6}
-              />
+              <Label>Team Members</Label>
+              <div className="space-y-4">
+                <div className="text-sm text-gray-600">
+                  <p>Add team members using the format: "Name|Role|Bio|ImageURL"</p>
+                  <p>You can upload images first and then copy the URLs, or enter URLs directly.</p>
+                </div>
+                <ImageUpload
+                  onUploadSuccess={(response) => {
+                    // Show a toast with the uploaded URL for easy copying
+                    const url = response.url
+                    navigator.clipboard.writeText(url).then(() => {
+                      alert(`Image uploaded! URL copied to clipboard: ${url}`)
+                    }).catch(() => {
+                      alert(`Image uploaded! URL: ${url}`)
+                    })
+                  }}
+                  folder="team"
+                  maxFiles={5}
+                  maxSizeMB={10}
+                  className="mb-2"
+                />
+                <Textarea
+                  id="teamMembers"
+                  value={sectionData.content.members?.map((member: any) => `${member.name}|${member.role}|${member.bio}|${member.imageUrl}`).join('\n') || ''}
+                  onChange={(e) => {
+                    const lines = e.target.value.split('\n').filter(line => line.trim())
+                    const members = lines.map(line => {
+                      const [name, role, bio, imageUrl] = line.split('|')
+                      return { name: name?.trim(), role: role?.trim(), bio: bio?.trim(), imageUrl: imageUrl?.trim() }
+                    })
+                    handleContentChange('members', members)
+                  }}
+                  placeholder="John Doe|CEO|Visionary leader with 10+ years experience|https://example.com/john.jpg&#10;Jane Smith|CTO|Technical expert and innovation driver|https://example.com/jane.jpg"
+                  rows={6}
+                />
+              </div>
             </div>
           </div>
         )
@@ -530,21 +673,42 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
               />
             </div>
             <div>
-              <Label htmlFor="socialItems">Social Proof Items (one per line, format: "Type|Title|Description|ImageURL")</Label>
-              <Textarea
-                id="socialItems"
-                value={sectionData.content.items?.map((item: any) => `${item.type}|${item.title}|${item.description}|${item.imageUrl}`).join('\n') || ''}
-                onChange={(e) => {
-                  const lines = e.target.value.split('\n').filter(line => line.trim())
-                  const items = lines.map(line => {
-                    const [type, title, description, imageUrl] = line.split('|')
-                    return { type: type?.trim(), title: title?.trim(), description: description?.trim(), imageUrl: imageUrl?.trim() }
-                  })
-                  handleContentChange('items', items)
-                }}
-                placeholder="logo|Company A|Leading tech company|https://example.com/logo1.png&#10;badge|Award Winner|Best Service 2024|https://example.com/badge.png&#10;testimonial|5-Star Rating|Customer satisfaction|https://example.com/rating.png"
-                rows={6}
-              />
+              <Label>Social Proof Items</Label>
+              <div className="space-y-4">
+                <div className="text-sm text-gray-600">
+                  <p>Add social proof items using the format: "Type|Title|Description|ImageURL"</p>
+                  <p>You can upload images first and then copy the URLs, or enter URLs directly.</p>
+                </div>
+                <ImageUpload
+                  onUploadSuccess={(response) => {
+                    // Show a toast with the uploaded URL for easy copying
+                    const url = response.url
+                    navigator.clipboard.writeText(url).then(() => {
+                      alert(`Image uploaded! URL copied to clipboard: ${url}`)
+                    }).catch(() => {
+                      alert(`Image uploaded! URL: ${url}`)
+                    })
+                  }}
+                  folder="social-proof"
+                  maxFiles={10}
+                  maxSizeMB={10}
+                  className="mb-2"
+                />
+                <Textarea
+                  id="socialItems"
+                  value={sectionData.content.items?.map((item: any) => `${item.type}|${item.title}|${item.description}|${item.imageUrl}`).join('\n') || ''}
+                  onChange={(e) => {
+                    const lines = e.target.value.split('\n').filter(line => line.trim())
+                    const items = lines.map(line => {
+                      const [type, title, description, imageUrl] = line.split('|')
+                      return { type: type?.trim(), title: title?.trim(), description: description?.trim(), imageUrl: imageUrl?.trim() }
+                    })
+                    handleContentChange('items', items)
+                  }}
+                  placeholder="logo|Company A|Leading tech company|https://example.com/logo1.png&#10;badge|Award Winner|Best Service 2024|https://example.com/badge.png&#10;testimonial|5-Star Rating|Customer satisfaction|https://example.com/rating.png"
+                  rows={6}
+                />
+              </div>
             </div>
           </div>
         )

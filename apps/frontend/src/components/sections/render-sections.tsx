@@ -42,14 +42,14 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
       case 'HeroSection':
         return <HeroSection key={section.id} {...section.content} />
       case 'Gallery':
-        // Map imageUrl to images for Gallery component
-        const imageUrl = section.content?.imageUrl
+        // Handle both 'images' and 'imageUrl' fields for backward compatibility
+        const images = section.content?.images || section.content?.imageUrl || []
         const galleryProps = {
           ...section.content,
-          images: Array.isArray(imageUrl) 
-            ? imageUrl.map((img: any) => ({
+          images: Array.isArray(images) 
+            ? images.map((img: any) => ({
                 url: img?.url || '',
-                alt: img?.title || img?.description || ''
+                alt: img?.alt || img?.title || img?.description || ''
               }))
             : []
         }

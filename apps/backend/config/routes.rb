@@ -36,7 +36,6 @@ Rails.application.routes.draw do
       # Image upload routes
       resources :images, only: [:index, :destroy]
       post 'images/upload', to: 'images#upload'
-      get 'images/presigned-url', to: 'images#presigned_url'
     end
   end
 

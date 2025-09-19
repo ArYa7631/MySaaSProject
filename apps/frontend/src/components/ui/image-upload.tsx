@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { ImageService, ImageUploadResponse } from '@/services/image.service'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/auth-context'
 
 interface ImageUploadProps {
   onUploadSuccess?: (response: ImageUploadResponse) => void
@@ -41,9 +42,23 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [uploadedImages, setUploadedImages] = useState<ImageUploadResponse[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const { toast } = useToast()
+  const { user } = useAuth()
 
   const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: any[]) => {
     setErrors([])
+    
+    // Check if user is authenticated
+    if (!user) {
+      const errorMessage = 'You must be logged in to upload images'
+      setErrors([errorMessage])
+      onUploadError?.(errorMessage)
+      toast({
+        title: 'Authentication Required',
+        description: errorMessage,
+        variant: 'destructive',
+      })
+      return
+    }
     
     // Handle rejected files
     if (rejectedFiles.length > 0) {
@@ -90,13 +105,18 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           clearInterval(progressInterval)
           setUploadProgress(100)
           
-          setUploadedImages(prev => [...prev, response])
-          onUploadSuccess?.(response)
-          
-          toast({
-            title: 'Upload Successful',
-            description: `Image ${file.name} uploaded successfully.`,
-          })
+          // Only add to uploaded images if response is valid
+          if (response && response.url) {
+            setUploadedImages(prev => [...prev, response])
+            onUploadSuccess?.(response)
+            
+            toast({
+              title: 'Upload Successful',
+              description: `Image ${file.name} uploaded successfully.`,
+            })
+          } else {
+            throw new Error('Invalid response from server')
+          }
           
           return response
         } catch (error) {
@@ -104,6 +124,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           const errorMessage = error instanceof Error ? error.message : 'Upload failed'
           setErrors(prev => [...prev, `Failed to upload ${file.name}: ${errorMessage}`])
           onUploadError?.(errorMessage)
+          
+          toast({
+            title: 'Upload Failed',
+            description: `Failed to upload ${file.name}: ${errorMessage}`,
+            variant: 'destructive',
+          })
+          
           throw error
         }
       })
@@ -115,7 +142,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       setUploading(false)
       setUploadProgress(0)
     }
-  }, [folder, maxSizeMB, onUploadSuccess, onUploadError, toast])
+  }, [folder, maxSizeMB, onUploadSuccess, onUploadError, toast, user])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -125,7 +152,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }, {} as Record<string, string[]>),
     maxFiles,
     maxSize: maxSizeMB * 1024 * 1024,
-    disabled: uploading
+    disabled: uploading || !user
   })
 
   const removeImage = (index: number) => {
@@ -162,22 +189,34 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
               </div>
             ) : (
               <div className="space-y-4">
-                <Upload className="h-12 w-12 text-gray-400 mx-auto" />
+                <Upload className={`h-12 w-12 mx-auto ${!user ? 'text-gray-300' : 'text-gray-400'}`} />
                 <div>
                   <p className="text-lg font-medium">
-                    {isDragActive ? 'Drop images here' : 'Upload Images'}
+                    {!user 
+                      ? 'Login Required' 
+                      : isDragActive 
+                        ? 'Drop images here' 
+                        : 'Upload Images'
+                    }
                   </p>
                   <p className="text-sm text-gray-500 mt-2">
-                    Drag and drop images here, or click to select files
+                    {!user 
+                      ? 'You must be logged in to upload images'
+                      : 'Drag and drop images here, or click to select files'
+                    }
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Supports: JPEG, PNG, GIF, WebP (max {maxSizeMB}MB each)
-                  </p>
+                  {user && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Supports: JPEG, PNG, GIF, WebP (max {maxSizeMB}MB each)
+                    </p>
+                  )}
                 </div>
-                <Button variant="outline" disabled={uploading}>
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose Files
-                </Button>
+                {user && (
+                  <Button variant="outline" disabled={uploading}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Choose Files
+                  </Button>
+                )}
               </div>
             )}
           </div>
