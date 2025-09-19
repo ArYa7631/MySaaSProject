@@ -1,4 +1,4 @@
-import { LandingPageSection } from '@mysaasproject/shared'
+import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/shared'
 import { Jumbotron } from './jumbotron'
 import { Gallery } from './gallery'
 import { InfoColumns } from './info-columns'
@@ -17,9 +17,10 @@ import { SocialProof } from './social-proof'
 
 interface RenderSectionsProps {
   sections: LandingPageSection[]
+  marketplaceConfig?: MarketplaceConfiguration | null
 }
 
-export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
+export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, marketplaceConfig }) => {
   const renderSection = (section: LandingPageSection) => {
     // Ensure section has required properties
     if (!section || !section.id || !section.type) {
@@ -38,9 +39,9 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
     
     switch (sectionType) {
       case 'Jumbotron':
-        return <Jumbotron key={section.id} {...section.content} />
+        return <Jumbotron key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'HeroSection':
-        return <HeroSection key={section.id} {...section.content} />
+        return <HeroSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'Gallery':
         // Handle both 'images' and 'imageUrl' fields for backward compatibility
         const images = section.content?.images || section.content?.imageUrl || []
@@ -53,11 +54,11 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
               }))
             : []
         }
-        return <Gallery key={section.id} {...galleryProps} />
+        return <Gallery key={section.id} {...galleryProps} marketplaceConfig={marketplaceConfig} />
       case 'InfoColumns':
-        return <InfoColumns key={section.id} {...section.content} />
+        return <InfoColumns key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'ContactForm':
-        return <ContactForm key={section.id} {...section.content} />
+        return <ContactForm key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'Testimonials':
         // Map columns to testimonials for Testimonials component
         const testimonialsProps = {
@@ -72,25 +73,25 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections }) => {
             avatar: col.avatar
           })) || []
         }
-        return <Testimonials key={section.id} {...testimonialsProps} />
+        return <Testimonials key={section.id} {...testimonialsProps} marketplaceConfig={marketplaceConfig} />
       case 'Features':
-        return <Features key={section.id} {...section.content} />
+        return <Features key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'Pricing':
-        return <Pricing key={section.id} {...section.content} />
+        return <Pricing key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'ImgDescription':
-        return <ImgDescription key={section.id} {...section.content} />
+        return <ImgDescription key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'VideoSection':
-        return <VideoSection key={section.id} {...section.content} />
+        return <VideoSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'StatsSection':
-        return <StatsSection key={section.id} {...section.content} />
+        return <StatsSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'TeamSection':
-        return <TeamSection key={section.id} {...section.content} />
+        return <TeamSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'FAQSection':
-        return <FAQSection key={section.id} {...section.content} />
+        return <FAQSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'NewsletterSection':
-        return <NewsletterSection key={section.id} {...section.content} />
+        return <NewsletterSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'SocialProof':
-        return <SocialProof key={section.id} {...section.content} />
+        return <SocialProof key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       default:
         console.warn(`Unknown section type: ${sectionType}`, section)
         return (

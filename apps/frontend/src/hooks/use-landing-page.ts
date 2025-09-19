@@ -12,15 +12,18 @@ export function useLandingPageSections() {
   })
 }
 
-export function useMarketplaceConfiguration() {
-  const { community } = useAuth()
+export function useMarketplaceConfiguration(community?: any) {
+  const { community: authCommunity } = useAuth()
+  const targetCommunity = community || authCommunity
 
   return useQuery({
-    queryKey: ['marketplace-configuration', community?.id || 3],
+    queryKey: ['marketplace-configuration', targetCommunity?.id],
     queryFn: () => {
-      const communityId = community?.id || 3 // Use community ID 3 for development
-      return LandingPageService.getMarketplaceConfiguration(communityId)
+      if (!targetCommunity?.id) {
+        throw new Error('No community found')
+      }
+      return LandingPageService.getMarketplaceConfiguration(targetCommunity.id)
     },
-    enabled: true, // Always enabled for development
+    enabled: !!targetCommunity?.id,
   })
 }

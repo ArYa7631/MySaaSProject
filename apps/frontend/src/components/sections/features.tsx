@@ -12,6 +12,7 @@ import {
   CheckCircle,
   ArrowRight
 } from 'lucide-react'
+import { MarketplaceConfiguration } from '@mysaasproject/shared'
 
 interface Feature {
   id: string
@@ -30,6 +31,7 @@ interface FeaturesProps {
   features: Feature[]
   layout?: 'grid' | 'list' | 'cards'
   showCategories?: boolean
+  marketplaceConfig?: MarketplaceConfiguration | null
 }
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -47,8 +49,14 @@ export const Features: React.FC<FeaturesProps> = ({
   features,
   layout = 'grid',
   showCategories = false,
+  marketplaceConfig,
 }) => {
   const categories = [...new Set(features.map(f => f.category).filter(Boolean))]
+  
+  // Get colors from marketplace config with fallbacks
+  const backgroundColor = marketplaceConfig?.global_bg_color || '#ffffff'
+  const textColor = marketplaceConfig?.global_text_color || '#000000'
+  const highlightColor = marketplaceConfig?.global_highlight_color || '#3b82f6'
 
   const renderFeatureCard = (feature: Feature) => {
     const IconComponent = iconMap[feature.icon] || Zap
@@ -56,39 +64,65 @@ export const Features: React.FC<FeaturesProps> = ({
     return (
       <Card 
         key={feature.id} 
-        className={`h-full transition-all duration-300 hover:shadow-lg ${
-          feature.highlighted ? 'ring-2 ring-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50' : ''
-        }`}
+        className="h-full transition-all duration-300 hover:shadow-lg"
+        style={{
+          ...(feature.highlighted && {
+            borderColor: highlightColor,
+            borderWidth: '2px',
+            backgroundColor: `${highlightColor}15` // 15% opacity
+          })
+        }}
       >
         <CardHeader>
           <div className="flex items-start justify-between">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <IconComponent className="h-6 w-6 text-blue-600" />
+            <div 
+              className="p-2 rounded-lg"
+              style={{ backgroundColor: `${highlightColor}20` }}
+            >
+              <IconComponent 
+                className="h-6 w-6" 
+                style={{ color: highlightColor }}
+              />
             </div>
             {feature.highlighted && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              <Badge 
+                variant="secondary"
+                style={{ 
+                  backgroundColor: `${highlightColor}20`,
+                  color: highlightColor
+                }}
+              >
                 Popular
               </Badge>
             )}
           </div>
-          <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+          <CardTitle 
+            className="text-xl font-semibold"
+            style={{ color: textColor }}
+          >
             {feature.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p 
+            className="leading-relaxed"
+            style={{ color: textColor, opacity: 0.8 }}
+          >
             {feature.description}
           </p>
           
           {feature.benefits && feature.benefits.length > 0 && (
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-900 dark:text-white text-sm">
+              <h4 
+                className="font-medium text-sm"
+                style={{ color: textColor }}
+              >
                 Key Benefits:
               </h4>
               <ul className="space-y-1">
                 {feature.benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                  <li key={index} className="flex items-center text-sm" style={{ color: textColor, opacity: 0.8 }}>
+                    <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: highlightColor }} />
                     {benefit}
                   </li>
                 ))}
@@ -97,7 +131,10 @@ export const Features: React.FC<FeaturesProps> = ({
           )}
           
           <div className="pt-2">
-            <button className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
+            <button 
+              className="inline-flex items-center font-medium text-sm transition-colors"
+              style={{ color: highlightColor }}
+            >
               Learn more
               <ArrowRight className="h-4 w-4 ml-1" />
             </button>
@@ -144,15 +181,24 @@ export const Features: React.FC<FeaturesProps> = ({
   }
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
+    <section 
+      className="py-16"
+      style={{ backgroundColor: backgroundColor }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 
+            className="text-3xl md:text-4xl font-bold mb-4"
+            style={{ color: textColor }}
+          >
             {title}
           </h2>
           {subtitle && (
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <p 
+              className="text-lg max-w-3xl mx-auto"
+              style={{ color: textColor, opacity: 0.8 }}
+            >
               {subtitle}
             </p>
           )}

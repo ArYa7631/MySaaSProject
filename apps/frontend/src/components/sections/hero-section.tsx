@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ImageUpload } from '@/components/ui/image-upload'
-import { ArrowRight, Play, Image as ImageIcon, X } from 'lucide-react'
+import { ArrowRight, Image as ImageIcon, X } from 'lucide-react'
 import { ImageUploadResponse } from '@/services/image.service'
+import { MarketplaceConfiguration } from '@mysaasproject/shared'
 
 interface HeroSectionProps {
   id: string
@@ -19,6 +20,7 @@ interface HeroSectionProps {
   showVideo?: boolean
   isEditing?: boolean
   onUpdate?: (updates: { backgroundImage?: string }) => void
+  marketplaceConfig?: MarketplaceConfiguration | null
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
@@ -32,6 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   showVideo = false,
   isEditing = false,
   onUpdate,
+  marketplaceConfig,
 }) => {
   const router = useRouter()
   const [showImageUpload, setShowImageUpload] = useState(false)
@@ -52,6 +55,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const removeBackgroundImage = () => {
     onUpdate?.({ backgroundImage: undefined })
   }
+
+  // Get colors from marketplace config with fallbacks
+  const backgroundColor = marketplaceConfig?.global_bg_color || '#ffffff'
+  const textColor = marketplaceConfig?.global_text_color || '#000000'
+  const highlightColor = marketplaceConfig?.global_highlight_color || '#3b82f6'
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -124,9 +132,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       )}
 
-      {/* Default Gradient Background (when no image) */}
+      {/* Default Background (when no image) */}
       {!backgroundImage && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+        <div 
+          className="absolute inset-0"
+          style={{ backgroundColor: backgroundColor }}
+        >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         </div>
       )}
@@ -149,16 +160,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         {subtitle && (
-          <p className="text-lg text-blue-300 font-medium mb-4 animate-fade-in drop-shadow-lg">
+          <p 
+            className="text-lg font-medium mb-4 animate-fade-in drop-shadow-lg"
+            style={{ color: textColor }}
+          >
             {subtitle}
           </p>
         )}
         
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight animate-fade-in-up drop-shadow-2xl">
+        <h1 
+          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in-up drop-shadow-2xl"
+          style={{ color: textColor }}
+        >
           {title}
         </h1>
         
-        <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto animate-fade-in-up delay-200 drop-shadow-lg">
+        <p 
+          className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate-fade-in-up delay-200 drop-shadow-lg"
+          style={{ color: textColor, opacity: 0.9 }}
+        >
           {description}
         </p>
         
@@ -166,7 +186,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <Button
             size="lg"
             onClick={() => handleNavigation(primaryButton.url)}
-            className="group text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="group text-lg px-8 py-4 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            style={{ backgroundColor: highlightColor }}
           >
             {primaryButton.text}
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -177,7 +198,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               variant="outline"
               size="lg"
               onClick={() => handleNavigation(secondaryButton.url)}
-              className="group text-lg px-8 py-4 border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
+              className="group text-lg px-8 py-4 border-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
+              style={{ 
+                borderColor: textColor,
+                color: textColor,
+                backgroundColor: 'transparent'
+              }}
             >
               {secondaryButton.text}
             </Button>
@@ -186,8 +212,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse" />
+          <div 
+            className="w-6 h-10 border-2 rounded-full flex justify-center"
+            style={{ borderColor: textColor }}
+          >
+            <div 
+              className="w-1 h-3 rounded-full mt-2 animate-pulse"
+              style={{ backgroundColor: textColor }}
+            />
           </div>
         </div>
       </div>

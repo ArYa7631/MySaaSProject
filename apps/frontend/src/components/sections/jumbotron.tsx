@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import { MarketplaceConfiguration } from '@mysaasproject/shared'
 
 interface JumbotronProps {
   id: string
@@ -10,6 +11,7 @@ interface JumbotronProps {
   description: string
   primaryButton: { text: string; url: string }
   secondaryButton?: { text: string; url: string }
+  marketplaceConfig?: MarketplaceConfiguration | null
 }
 
 export const Jumbotron: React.FC<JumbotronProps> = ({
@@ -17,6 +19,7 @@ export const Jumbotron: React.FC<JumbotronProps> = ({
   description,
   primaryButton,
   secondaryButton,
+  marketplaceConfig,
 }) => {
   const router = useRouter()
 
@@ -28,8 +31,19 @@ export const Jumbotron: React.FC<JumbotronProps> = ({
     }
   }
 
+  // Get colors from marketplace config with fallbacks
+  const backgroundColor = marketplaceConfig?.global_bg_color || '#ffffff'
+  const textColor = marketplaceConfig?.global_text_color || '#000000'
+  const highlightColor = marketplaceConfig?.global_highlight_color || '#3b82f6'
+
   return (
-    <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden">
+    <section 
+      className="relative overflow-hidden"
+      style={{ 
+        backgroundColor: backgroundColor,
+        color: textColor
+      }}
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -39,16 +53,26 @@ export const Jumbotron: React.FC<JumbotronProps> = ({
       
       <div className="relative py-16 px-4 mx-auto max-w-screen-xl text-center">
         <div className="max-w-4xl mx-auto">
-          <h1 className="mb-6 text-4xl font-extrabold text-gray-900 md:text-5xl lg:text-6xl dark:text-white leading-tight">
+          <h1 
+            className="mb-6 text-4xl font-extrabold md:text-5xl lg:text-6xl leading-tight"
+            style={{ color: textColor }}
+          >
             {title}
           </h1>
-          <p className="mb-10 text-lg font-normal text-gray-600 lg:text-xl dark:text-gray-300 leading-relaxed">
+          <p 
+            className="mb-10 text-lg font-normal lg:text-xl leading-relaxed"
+            style={{ color: textColor, opacity: 0.8 }}
+          >
             {description}
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
             <Button 
               onClick={() => handleNavigation(primaryButton.url)}
-              className="group inline-flex justify-center items-center py-4 px-8 text-base font-medium text-center rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="group inline-flex justify-center items-center py-4 px-8 text-base font-medium text-center rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              style={{ 
+                backgroundColor: highlightColor,
+                borderColor: highlightColor
+              }}
             >
               {primaryButton.text}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -57,7 +81,12 @@ export const Jumbotron: React.FC<JumbotronProps> = ({
               <Button
                 variant="outline"
                 onClick={() => handleNavigation(secondaryButton.url)}
-                className="group inline-flex justify-center items-center py-4 px-8 text-base font-medium text-center text-gray-700 dark:text-gray-300 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 transform hover:scale-105"
+                className="group inline-flex justify-center items-center py-4 px-8 text-base font-medium text-center rounded-full border-2 transition-all duration-300 transform hover:scale-105"
+                style={{ 
+                  color: textColor,
+                  borderColor: highlightColor,
+                  backgroundColor: 'transparent'
+                }}
               >
                 {secondaryButton.text}
               </Button>

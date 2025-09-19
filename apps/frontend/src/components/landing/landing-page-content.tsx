@@ -4,13 +4,12 @@ import { RenderSections } from '@/components/sections/render-sections'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
-import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { LandingPageSkeleton } from '@/components/ui/loading-skeleton'
 import { useLandingPageState } from '@/hooks/use-landing-page-state'
 import { useCommunityContext } from '@/hooks/use-community-context'
 
 export const LandingPageContent: React.FC = () => {
-  const { sections, marketplaceConfig, isLoading, isError, ...nitesh } = useLandingPageState()
+  const { sections, marketplaceConfig, isLoading, isError } = useLandingPageState()
   const { community, isLoading: communityLoading, isError: communityError } = useCommunityContext()
 
   if (isLoading || communityLoading) {
@@ -35,7 +34,7 @@ export const LandingPageContent: React.FC = () => {
       <div className="min-h-screen">
         <Navbar config={marketplaceConfig} />
         <main>
-          <RenderSections sections={Array.isArray(sections) ? sections : []} />
+          <RenderSections sections={Array.isArray(sections) ? sections : []} marketplaceConfig={marketplaceConfig} />
         </main>
         <Footer config={marketplaceConfig} />
       </div>

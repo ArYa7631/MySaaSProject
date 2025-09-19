@@ -16,7 +16,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const apiClient = createApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001')
+const apiClient = createApiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1`)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (user.community_id && !communityData) {
           try {
             const communityResponse = await apiClient.get<{ data: Community }>(
-              `/api/v1/communities/${user.community_id}`
+              `/communities/${user.community_id}`
             )
             const community = communityResponse.data
             setCommunity(community)
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (credentials: LoginCredentials) => {
     try {
       const response = await apiClient.post<{ data: { user: User; token: string } }>(
-        '/api/v1/auth/sign_in',
+        '/auth/sign_in',
         { user: credentials }
       )
       
@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user.community_id) {
         try {
           const communityResponse = await apiClient.get<{ data: Community }>(
-            `/api/v1/communities/${user.community_id}`
+            `/communities/${user.community_id}`
           )
           const community = communityResponse.data
           setCommunity(community)
@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (credentials: RegisterCredentials) => {
     try {
       const response = await apiClient.post<{ data: { user: User; token: string } }>(
-        '/api/v1/auth/sign_up',
+        '/auth/sign_up',
         { user: credentials }
       )
       
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await apiClient.delete('/api/v1/auth/sign_out')
+      await apiClient.delete('/auth/sign_out')
     } catch (error) {
       console.error('Logout request failed:', error)
     } finally {
