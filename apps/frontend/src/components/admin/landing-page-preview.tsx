@@ -296,6 +296,33 @@ export const LandingPagePreview: React.FC<LandingPagePreviewProps> = ({
           </div>
         )
 
+      case 'CustomSection':
+        return (
+          <div 
+            className={`${content.padding || 'py-16'} px-8`}
+            style={{
+              backgroundColor: content.backgroundColor || '#ffffff',
+              color: content.textColor || '#000000'
+            }}
+          >
+            <div className="max-w-6xl mx-auto">
+              {content.title && (
+                <h2 
+                  className="text-3xl font-bold text-center mb-8"
+                  style={{ color: content.textColor || '#000000' }}
+                >
+                  {content.title}
+                </h2>
+              )}
+              <div 
+                className="prose prose-lg max-w-none"
+                style={{ color: content.textColor || '#000000' }}
+                dangerouslySetInnerHTML={{ __html: content.content || '<p>No content added yet.</p>' }}
+              />
+            </div>
+          </div>
+        )
+
       default:
         return (
           <div className="py-8 px-8 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg">

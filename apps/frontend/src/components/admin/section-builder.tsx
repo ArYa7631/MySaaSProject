@@ -11,6 +11,7 @@ import { Plus, Save, X, Eye } from 'lucide-react'
 import { LandingPageSection } from '@mysaasproject/shared'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { ImageUploadResponse } from '@/services/image.service'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 
 interface SectionBuilderProps {
   onSave: (section: LandingPageSection) => void
@@ -34,6 +35,7 @@ const sectionTypes = [
   { value: 'FAQSection', label: 'FAQ Section', description: 'Frequently asked questions', icon: '❓' },
   { value: 'NewsletterSection', label: 'Newsletter Signup', description: 'Email subscription form', icon: '📧' },
   { value: 'SocialProof', label: 'Social Proof', description: 'Logos, badges, and trust indicators', icon: '🏆' },
+  { value: 'CustomSection', label: 'Custom Section', description: 'Fully customizable section with rich text editor', icon: '✏️' },
 ]
 
 export const SectionBuilder: React.FC<SectionBuilderProps> = ({
@@ -890,6 +892,77 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
                 }}
                 placeholder="Basic|$99|month|5 pages, Basic support|false&#10;Pro|$199|month|15 pages, Priority support, Analytics|true&#10;Enterprise|$399|month|Unlimited pages, 24/7 support, Custom features|false"
                 rows={6}
+              />
+            </div>
+          </div>
+        )
+
+      case 'CustomSection':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="title">Section Title (optional)</Label>
+              <Input
+                id="title"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Enter section title"
+              />
+            </div>
+            <div>
+              <Label htmlFor="content">Content</Label>
+              <RichTextEditor
+                content={sectionData.content.content || ''}
+                onChange={(content) => handleContentChange('content', content)}
+                placeholder="Start typing your custom content..."
+                className="min-h-[300px]"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="backgroundColor">Background Color (optional)</Label>
+                <Input
+                  id="backgroundColor"
+                  type="color"
+                  value={sectionData.content.backgroundColor || '#ffffff'}
+                  onChange={(e) => handleContentChange('backgroundColor', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="textColor">Text Color (optional)</Label>
+                <Input
+                  id="textColor"
+                  type="color"
+                  value={sectionData.content.textColor || '#000000'}
+                  onChange={(e) => handleContentChange('textColor', e.target.value)}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="padding">Padding (optional)</Label>
+              <Select
+                value={sectionData.content.padding || 'py-16'}
+                onValueChange={(value) => handleContentChange('padding', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select padding" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="py-8">Small (py-8)</SelectItem>
+                  <SelectItem value="py-12">Medium (py-12)</SelectItem>
+                  <SelectItem value="py-16">Large (py-16)</SelectItem>
+                  <SelectItem value="py-20">Extra Large (py-20)</SelectItem>
+                  <SelectItem value="py-24">Huge (py-24)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="className">Custom CSS Classes (optional)</Label>
+              <Input
+                id="className"
+                value={sectionData.content.className || ''}
+                onChange={(e) => handleContentChange('className', e.target.value)}
+                placeholder="e.g., custom-gradient, special-border"
               />
             </div>
           </div>

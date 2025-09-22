@@ -277,6 +277,52 @@ const sectionTemplates: LandingPageSection[] = [
       videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       thumbnailUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'
     }
+  },
+  {
+    id: 'custom-blank',
+    name: 'Custom Blank Section',
+    description: 'Start with a blank custom section',
+    type: 'CustomSection',
+    content: {
+      title: '',
+      content: '<p>Start typing your custom content here...</p>',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      padding: 'py-16',
+      className: ''
+    }
+  },
+  {
+    id: 'custom-about',
+    name: 'About Us Section',
+    description: 'Custom about us section with rich content',
+    type: 'CustomSection',
+    content: {
+      title: 'About Our Company',
+      content: `
+        <h2>Our Story</h2>
+        <p>We are a passionate team dedicated to delivering exceptional solutions that drive business growth and innovation.</p>
+        
+        <h3>Our Mission</h3>
+        <p>To empower businesses with cutting-edge technology and creative solutions that make a real difference.</p>
+        
+        <h3>Our Values</h3>
+        <ul>
+          <li><strong>Innovation:</strong> We constantly push boundaries and explore new possibilities</li>
+          <li><strong>Quality:</strong> We deliver excellence in everything we do</li>
+          <li><strong>Integrity:</strong> We maintain the highest ethical standards</li>
+          <li><strong>Collaboration:</strong> We work together to achieve common goals</li>
+        </ul>
+        
+        <blockquote>
+          <p>"Success is not just about reaching the destination, but about the journey and the impact we make along the way."</p>
+        </blockquote>
+      `,
+      backgroundColor: '#f8fafc',
+      textColor: '#1e293b',
+      padding: 'py-20',
+      className: ''
+    }
   }
 ]
 

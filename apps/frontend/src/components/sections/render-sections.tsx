@@ -15,6 +15,7 @@ import { TeamSection } from './team-section'
 import { FAQSection } from './faq-section'
 import { NewsletterSection } from './newsletter-section'
 import { SocialProof } from './social-proof'
+import { CustomSection } from './custom-section'
 
 interface RenderSectionsProps {
   sections: LandingPageSection[]
@@ -99,6 +100,8 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, market
         return <NewsletterSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'SocialProof':
         return <SocialProof key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
+      case 'CustomSection':
+        return <CustomSection key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       default:
         console.warn(`Unknown section type: ${sectionType}`, section)
         return (
@@ -111,7 +114,7 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, market
                 Section type "{sectionType}" is not supported yet.
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Available types: Jumbotron, HeroSection, Gallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription, VideoSection, StatsSection, TeamSection, FAQSection, NewsletterSection, SocialProof
+                Available types: Jumbotron, HeroSection, Gallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription, VideoSection, StatsSection, TeamSection, FAQSection, NewsletterSection, SocialProof, CustomSection
               </p>
             </div>
           </div>
