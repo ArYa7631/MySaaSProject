@@ -12,7 +12,8 @@ import {
   Globe,
   Palette,
   BarChart3,
-  Image
+  Image,
+  Navigation
 } from 'lucide-react'
 
 const navigation = [
@@ -24,6 +25,16 @@ const navigation = [
   {
     name: 'Landing Page',
     href: '/admin/landing-page',
+    icon: FileText,
+  },
+  {
+    name: 'Navigation',
+    href: '/admin/navigation',
+    icon: Navigation,
+  },
+  {
+    name: 'Content Pages',
+    href: '/admin/content-pages',
     icon: FileText,
   },
   {

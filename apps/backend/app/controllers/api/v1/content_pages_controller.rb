@@ -53,6 +53,12 @@ class Api::V1::ContentPagesController < Api::V1::BaseController
   end
 
   def content_page_params
-    params.require(:content_page).permit(:title, :end_point, :data, :meta_data, :is_active)
+    params.require(:content_page).permit(
+      :title, 
+      :end_point, 
+      :is_active,
+      data: {},
+      meta_data: {}
+    )
   end
 end

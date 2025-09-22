@@ -1,3 +1,4 @@
+import React from 'react'
 import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/shared'
 import { Jumbotron } from './jumbotron'
 import { Gallery } from './gallery'
@@ -21,12 +22,18 @@ interface RenderSectionsProps {
 }
 
 export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, marketplaceConfig }) => {
+  // Debug: Log sections to identify duplicates
+  console.log('RenderSections - sections:', sections)
+  
   const renderSection = (section: LandingPageSection) => {
     // Ensure section has required properties
     if (!section || !section.id || !section.type) {
       console.warn('Invalid section structure:', section)
       return null
     }
+    
+    // Debug: Log each section being rendered
+    console.log('Rendering section:', section.id, section.type)
 
     // Use the 'type' field from the backend data structure
     const sectionType = section.type
@@ -126,5 +133,9 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, market
     return null
   }
 
-  return <>{validSections.map(renderSection)}</>
+  return <>{validSections.map((section, index) => (
+    <React.Fragment key={`${section.id}-${index}`}>
+      {renderSection(section)}
+    </React.Fragment>
+  ))}</>
 }

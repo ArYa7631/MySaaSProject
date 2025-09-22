@@ -1,8 +1,14 @@
 class Footer < ApplicationRecord
   belongs_to :community
 
-  # Validations
-  validates :sections, presence: true
+  # Validations - allow empty arrays but ensure sections exist
+  validates :sections, presence: true, allow_blank: true
+
+  # Color validations
+  validates :background_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
+  validates :text_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
+  validates :link_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
+  validates :hover_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
 
   # Default values (using jsonb to match migrations)
   attribute :sections, :jsonb, default: []
@@ -10,6 +16,32 @@ class Footer < ApplicationRecord
   # Instance methods
   def section_links
     sections || []
+  end
+
+  def sections_with_converted_links
+    return [] unless sections.is_a?(Array)
+    
+    sections.map do |section|
+      if section.is_a?(Hash)
+        converted_section = section.dup
+        if section['links'].is_a?(Array)
+          converted_section['links'] = section['links'].map.with_index do |link, index|
+            if link.is_a?(Hash)
+              # Ensure all required fields are present
+              link.merge(
+                'id' => link['id'] || "link-#{index}",
+                'order' => link['order'] || index
+              )
+            else
+              link
+            end
+          end
+        end
+        converted_section
+      else
+        section
+      end
+    end
   end
 
   def find_section(label)

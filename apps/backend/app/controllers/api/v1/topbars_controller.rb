@@ -24,10 +24,20 @@ class Api::V1::TopbarsController < Api::V1::BaseController
 
   # PATCH/PUT /api/v1/communities/:community_id/topbar
   def update
-    if @topbar.update(topbar_params)
-      render_success(@topbar, TopbarSerializer)
+    if @topbar
+      if @topbar.update(topbar_params)
+        render_success(@topbar, TopbarSerializer)
+      else
+        render_error("Failed to update topbar", @topbar.errors.as_json)
+      end
     else
-      render_error("Failed to update topbar", @topbar.errors.as_json)
+      # Create topbar if it doesn't exist
+      @topbar = current_community.build_topbar(topbar_params)
+      if @topbar.save
+        render_created(@topbar, TopbarSerializer)
+      else
+        render_error("Failed to create topbar", @topbar.errors.as_json)
+      end
     end
   end
 
@@ -47,6 +57,17 @@ class Api::V1::TopbarsController < Api::V1::BaseController
   end
 
   def topbar_params
-    params.require(:topbar).permit(:is_multilingual, :navigation, :profile)
+    # Allow nested parameters for navigation items and color fields
+    params.require(:topbar).permit(
+      :is_multilingual, 
+      :profile,
+      :background_color,
+      :text_color,
+      :link_color,
+      :hover_color,
+      navigation: [
+        items: [:id, :name, :url, :isExternal, :order]
+      ]
+    )
   end
 end

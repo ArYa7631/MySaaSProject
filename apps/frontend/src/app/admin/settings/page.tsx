@@ -18,6 +18,7 @@ import { LandingPageService } from '@/services/landing-page.service'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { ImageUploadResponse } from '@/services/image.service'
 import { ColorPicker } from '@/components/ui/color-picker'
+import { NavigationService } from '@/services/navigation.service'
 
 // Currency and Locale options
 const CURRENCIES = [
@@ -197,6 +198,202 @@ const COLOR_COMBINATIONS = [
   }
 ]
 
+// Navigation Color Theme Combinations
+const NAVIGATION_COLOR_THEMES = [
+  {
+    name: 'Classic White',
+    description: 'Clean and professional',
+    topbar: {
+      background_color: '#ffffff',
+      text_color: '#1f2937',
+      link_color: '#374151',
+      hover_color: '#111827'
+    },
+    footer: {
+      background_color: '#f8fafc',
+      text_color: '#374151',
+      link_color: '#6b7280',
+      hover_color: '#1f2937'
+    }
+  },
+  {
+    name: 'Dark Professional',
+    description: 'Modern and sleek',
+    topbar: {
+      background_color: '#1f2937',
+      text_color: '#f9fafb',
+      link_color: '#d1d5db',
+      hover_color: '#ffffff'
+    },
+    footer: {
+      background_color: '#111827',
+      text_color: '#f3f4f6',
+      link_color: '#9ca3af',
+      hover_color: '#ffffff'
+    }
+  },
+  {
+    name: 'Ocean Blue',
+    description: 'Calm and trustworthy',
+    topbar: {
+      background_color: '#0ea5e9',
+      text_color: '#ffffff',
+      link_color: '#e0f2fe',
+      hover_color: '#f0f9ff'
+    },
+    footer: {
+      background_color: '#0369a1',
+      text_color: '#ffffff',
+      link_color: '#bae6fd',
+      hover_color: '#e0f2fe'
+    }
+  },
+  {
+    name: 'Forest Green',
+    description: 'Natural and eco-friendly',
+    topbar: {
+      background_color: '#22c55e',
+      text_color: '#ffffff',
+      link_color: '#dcfce7',
+      hover_color: '#f0fdf4'
+    },
+    footer: {
+      background_color: '#16a34a',
+      text_color: '#ffffff',
+      link_color: '#bbf7d0',
+      hover_color: '#dcfce7'
+    }
+  },
+  {
+    name: 'Sunset Orange',
+    description: 'Warm and energetic',
+    topbar: {
+      background_color: '#f97316',
+      text_color: '#ffffff',
+      link_color: '#fed7aa',
+      hover_color: '#fff7ed'
+    },
+    footer: {
+      background_color: '#ea580c',
+      text_color: '#ffffff',
+      link_color: '#fdba74',
+      hover_color: '#fed7aa'
+    }
+  },
+  {
+    name: 'Royal Purple',
+    description: 'Luxurious and creative',
+    topbar: {
+      background_color: '#8b5cf6',
+      text_color: '#ffffff',
+      link_color: '#e9d5ff',
+      hover_color: '#faf5ff'
+    },
+    footer: {
+      background_color: '#7c3aed',
+      text_color: '#ffffff',
+      link_color: '#c4b5fd',
+      hover_color: '#e9d5ff'
+    }
+  },
+  {
+    name: 'Rose Pink',
+    description: 'Elegant and modern',
+    topbar: {
+      background_color: '#ec4899',
+      text_color: '#ffffff',
+      link_color: '#fce7f3',
+      hover_color: '#fdf2f8'
+    },
+    footer: {
+      background_color: '#db2777',
+      text_color: '#ffffff',
+      link_color: '#f9a8d4',
+      hover_color: '#fce7f3'
+    }
+  },
+  {
+    name: 'Midnight Dark',
+    description: 'Sleek and professional',
+    topbar: {
+      background_color: '#0f172a',
+      text_color: '#f1f5f9',
+      link_color: '#cbd5e1',
+      hover_color: '#ffffff'
+    },
+    footer: {
+      background_color: '#020617',
+      text_color: '#f8fafc',
+      link_color: '#94a3b8',
+      hover_color: '#f1f5f9'
+    }
+  },
+  {
+    name: 'Gradient Blue',
+    description: 'Modern gradient design',
+    topbar: {
+      background_color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      text_color: '#ffffff',
+      link_color: '#e0e7ff',
+      hover_color: '#f0f4ff'
+    },
+    footer: {
+      background_color: 'linear-gradient(135deg, #4c1d95 0%, #581c87 100%)',
+      text_color: '#ffffff',
+      link_color: '#c4b5fd',
+      hover_color: '#e0e7ff'
+    }
+  },
+  {
+    name: 'Gradient Sunset',
+    description: 'Warm gradient vibes',
+    topbar: {
+      background_color: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)',
+      text_color: '#1f2937',
+      link_color: '#374151',
+      hover_color: '#111827'
+    },
+    footer: {
+      background_color: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+      text_color: '#ffffff',
+      link_color: '#fed7aa',
+      hover_color: '#fff7ed'
+    }
+  },
+  {
+    name: 'Minimal Gray',
+    description: 'Clean and minimal',
+    topbar: {
+      background_color: '#ffffff',
+      text_color: '#374151',
+      link_color: '#6b7280',
+      hover_color: '#111827'
+    },
+    footer: {
+      background_color: '#f9fafb',
+      text_color: '#374151',
+      link_color: '#6b7280',
+      hover_color: '#111827'
+    }
+  },
+  {
+    name: 'Emerald Green',
+    description: 'Fresh and vibrant',
+    topbar: {
+      background_color: '#10b981',
+      text_color: '#ffffff',
+      link_color: '#d1fae5',
+      hover_color: '#ecfdf5'
+    },
+    footer: {
+      background_color: '#059669',
+      text_color: '#ffffff',
+      link_color: '#a7f3d0',
+      hover_color: '#d1fae5'
+    }
+  }
+]
+
 export default function SettingsPage() {
   const { user } = useAuth()
   const { community, isLoading: communityLoading, isError: communityError } = useCommunityContext()
@@ -216,6 +413,18 @@ export default function SettingsPage() {
     globalTextColor: '',
     globalBgColor: '',
     globalHighlightColor: '',
+    
+    // Topbar colors
+    topbarBackgroundColor: '',
+    topbarTextColor: '',
+    topbarLinkColor: '',
+    topbarHoverColor: '',
+    
+    // Footer colors
+    footerBackgroundColor: '',
+    footerTextColor: '',
+    footerLinkColor: '',
+    footerHoverColor: '',
     
     // Localization
     available_locale: 'en',
@@ -271,6 +480,38 @@ export default function SettingsPage() {
     }
   }, [config])
 
+  // Load topbar and footer data
+  useEffect(() => {
+    const loadNavigationData = async () => {
+      if (!community?.id) return
+
+      try {
+        const [topbarData, footerData] = await Promise.all([
+          NavigationService.getTopbar(community.id),
+          NavigationService.getFooter(community.id)
+        ])
+
+        setFormData(prev => ({
+          ...prev,
+          // Topbar colors
+          topbarBackgroundColor: topbarData?.background_color || '',
+          topbarTextColor: topbarData?.text_color || '',
+          topbarLinkColor: topbarData?.link_color || '',
+          topbarHoverColor: topbarData?.hover_color || '',
+          // Footer colors
+          footerBackgroundColor: footerData?.background_color || '',
+          footerTextColor: footerData?.text_color || '',
+          footerLinkColor: footerData?.link_color || '',
+          footerHoverColor: footerData?.hover_color || '',
+        }))
+      } catch (error) {
+        console.error('Failed to load navigation data:', error)
+      }
+    }
+
+    loadNavigationData()
+  }, [community?.id])
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
@@ -300,6 +541,27 @@ export default function SettingsPage() {
     toast({
       title: 'Color Combination Applied',
       description: `${combination.name} theme has been applied successfully.`,
+    })
+  }
+
+  const applyNavigationColorTheme = (theme: typeof NAVIGATION_COLOR_THEMES[0]) => {
+    setFormData(prev => ({
+      ...prev,
+      // Topbar colors
+      topbarBackgroundColor: theme.topbar.background_color,
+      topbarTextColor: theme.topbar.text_color,
+      topbarLinkColor: theme.topbar.link_color,
+      topbarHoverColor: theme.topbar.hover_color,
+      // Footer colors
+      footerBackgroundColor: theme.footer.background_color,
+      footerTextColor: theme.footer.text_color,
+      footerLinkColor: theme.footer.link_color,
+      footerHoverColor: theme.footer.hover_color,
+    }))
+    
+    toast({
+      title: 'Navigation Theme Applied',
+      description: `${theme.name} navigation theme has been applied successfully.`,
     })
   }
 
@@ -382,6 +644,7 @@ export default function SettingsPage() {
         return
       }
       
+      // Save marketplace configuration
       const result = await LandingPageService.updateMarketplaceConfiguration(communityId, {
         title: formData.title,
         logo: formData.logo,
@@ -406,6 +669,22 @@ export default function SettingsPage() {
         is_enabled: formData.is_enabled,
         is_super_admin: formData.is_super_admin,
       } as any) // Temporary type assertion until shared types are updated
+
+      // Save topbar colors
+      await NavigationService.updateTopbarColors(communityId, {
+        background_color: formData.topbarBackgroundColor,
+        text_color: formData.topbarTextColor,
+        link_color: formData.topbarLinkColor,
+        hover_color: formData.topbarHoverColor,
+      })
+
+      // Save footer colors
+      await NavigationService.updateFooterColors(communityId, {
+        background_color: formData.footerBackgroundColor,
+        text_color: formData.footerTextColor,
+        link_color: formData.footerLinkColor,
+        hover_color: formData.footerHoverColor,
+      })
       
       toast({
         title: 'Settings Saved',
@@ -687,6 +966,85 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* Navigation Color Themes */}
+          <div className="space-y-4">
+            <div>
+              <Label className="text-lg font-semibold">Navigation Color Themes</Label>
+              <p className="text-sm text-gray-600 mt-1">Beautiful color combinations for your topbar and footer</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {NAVIGATION_COLOR_THEMES.map((theme, index) => (
+                <div
+                  key={index}
+                  className="group cursor-pointer"
+                  onClick={() => applyNavigationColorTheme(theme)}
+                >
+                  <div className="relative overflow-hidden rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-all duration-200 group-hover:shadow-lg">
+                    {/* Topbar Preview */}
+                    <div className="h-8 flex">
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.topbar.background_color }}
+                      />
+                      <div 
+                        className="w-6"
+                        style={{ backgroundColor: theme.topbar.link_color }}
+                      />
+                    </div>
+                    
+                    {/* Footer Preview */}
+                    <div className="h-8 flex">
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.footer.background_color }}
+                      />
+                      <div 
+                        className="w-6"
+                        style={{ backgroundColor: theme.footer.link_color }}
+                      />
+                    </div>
+                    
+                    {/* Color Swatches */}
+                    <div className="h-4 flex">
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.topbar.text_color }}
+                      />
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.topbar.hover_color }}
+                      />
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.footer.text_color }}
+                      />
+                      <div 
+                        className="flex-1"
+                        style={{ backgroundColor: theme.footer.hover_color }}
+                      />
+                    </div>
+                    
+                    {/* Label */}
+                    <div className="p-3 bg-white">
+                      <h4 className="font-medium text-sm text-gray-900">{theme.name}</h4>
+                      <p className="text-xs text-gray-500 mt-1">{theme.description}</p>
+                    </div>
+                    
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200 flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div className="bg-white rounded-full p-2 shadow-lg">
+                          <Globe className="h-4 w-4 text-gray-700" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -725,6 +1083,104 @@ export default function SettingsPage() {
               onChange={(color) => handleInputChange('title_color', color)}
               placeholder="#000000"
             />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Navigation Colors */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Globe className="h-5 w-5 mr-2" />
+            Navigation Colors
+          </CardTitle>
+          <CardDescription>Customize the appearance of your topbar and footer</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Topbar Colors */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Topbar Colors</h3>
+              <p className="text-sm text-gray-600 mb-4">Customize the colors for your site's top navigation bar</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ColorPicker
+                label="Topbar Background Color"
+                value={formData.topbarBackgroundColor}
+                onChange={(color) => handleInputChange('topbarBackgroundColor', color)}
+                placeholder="#ffffff"
+              />
+              
+              <ColorPicker
+                label="Topbar Text Color"
+                value={formData.topbarTextColor}
+                onChange={(color) => handleInputChange('topbarTextColor', color)}
+                placeholder="#000000"
+              />
+              
+              <ColorPicker
+                label="Topbar Link Color"
+                value={formData.topbarLinkColor}
+                onChange={(color) => handleInputChange('topbarLinkColor', color)}
+                placeholder="#3b82f6"
+              />
+              
+              <ColorPicker
+                label="Topbar Hover Color"
+                value={formData.topbarHoverColor}
+                onChange={(color) => handleInputChange('topbarHoverColor', color)}
+                placeholder="#1d4ed8"
+              />
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-500">Footer Colors</span>
+            </div>
+          </div>
+
+          {/* Footer Colors */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Footer Colors</h3>
+              <p className="text-sm text-gray-600 mb-4">Customize the colors for your site's footer</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ColorPicker
+                label="Footer Background Color"
+                value={formData.footerBackgroundColor}
+                onChange={(color) => handleInputChange('footerBackgroundColor', color)}
+                placeholder="#f8fafc"
+              />
+              
+              <ColorPicker
+                label="Footer Text Color"
+                value={formData.footerTextColor}
+                onChange={(color) => handleInputChange('footerTextColor', color)}
+                placeholder="#374151"
+              />
+              
+              <ColorPicker
+                label="Footer Link Color"
+                value={formData.footerLinkColor}
+                onChange={(color) => handleInputChange('footerLinkColor', color)}
+                placeholder="#3b82f6"
+              />
+              
+              <ColorPicker
+                label="Footer Hover Color"
+                value={formData.footerHoverColor}
+                onChange={(color) => handleInputChange('footerHoverColor', color)}
+                placeholder="#1d4ed8"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -897,61 +1353,184 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Preview</CardTitle>
-          <CardDescription>See how your branding will look</CardDescription>
+          <CardDescription>See how your branding and navigation will look</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div 
-            className="p-6 rounded-lg border"
-            style={{ 
-              backgroundColor: formData.globalBgColor || '#ffffff',
-              color: formData.globalTextColor || '#000000'
-            }}
-          >
-            <div className="flex items-center space-x-3 mb-4">
-              {formData.logo && (
-                <img 
-                  src={formData.logo} 
-                  alt="Logo" 
-                  className="h-8 w-auto"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
+        <CardContent className="space-y-6">
+          {/* Navigation Preview */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Navigation Preview</h3>
+            
+            {/* Topbar Preview */}
+            <div 
+              className="p-4 rounded-t-lg border border-b-0"
+              style={{ 
+                backgroundColor: formData.topbarBackgroundColor || '#ffffff',
+                color: formData.topbarTextColor || '#000000'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {formData.logo && (
+                    <img 
+                      src={formData.logo} 
+                      alt="Logo" 
+                      className="h-6 w-auto"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  )}
+                  <span 
+                    className="text-lg font-bold"
+                    style={{ color: formData.topbarTextColor || '#000000' }}
+                  >
+                    {formData.title || 'Your Site Title'}
+                  </span>
+                </div>
+                <div className="flex space-x-4">
+                  <span 
+                    className="text-sm"
+                    style={{ color: formData.topbarLinkColor || '#374151' }}
+                  >
+                    Home
+                  </span>
+                  <span 
+                    className="text-sm"
+                    style={{ color: formData.topbarLinkColor || '#374151' }}
+                  >
+                    About
+                  </span>
+                  <span 
+                    className="text-sm"
+                    style={{ color: formData.topbarLinkColor || '#374151' }}
+                  >
+                    Contact
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Footer Preview */}
+            <div 
+              className="p-4 rounded-b-lg border"
+              style={{ 
+                backgroundColor: formData.footerBackgroundColor || '#f8fafc',
+                color: formData.footerTextColor || '#374151'
+              }}
+            >
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <h4 
+                    className="font-semibold mb-2"
+                    style={{ color: formData.footerTextColor || '#374151' }}
+                  >
+                    Quick Links
+                  </h4>
+                  <div className="space-y-1">
+                    <div 
+                      className="text-sm"
+                      style={{ color: formData.footerLinkColor || '#6b7280' }}
+                    >
+                      Home
+                    </div>
+                    <div 
+                      className="text-sm"
+                      style={{ color: formData.footerLinkColor || '#6b7280' }}
+                    >
+                      About
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 
+                    className="font-semibold mb-2"
+                    style={{ color: formData.footerTextColor || '#374151' }}
+                  >
+                    Support
+                  </h4>
+                  <div className="space-y-1">
+                    <div 
+                      className="text-sm"
+                      style={{ color: formData.footerLinkColor || '#6b7280' }}
+                    >
+                      Help
+                    </div>
+                    <div 
+                      className="text-sm"
+                      style={{ color: formData.footerLinkColor || '#6b7280' }}
+                    >
+                      Contact
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p 
+                    className="text-xs"
+                    style={{ color: formData.footerTextColor || '#6b7280' }}
+                  >
+                    © 2025 {formData.title || 'Your Site'}. All rights reserved.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Preview */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Content Preview</h3>
+            <div 
+              className="p-6 rounded-lg border"
+              style={{ 
+                backgroundColor: formData.globalBgColor || '#ffffff',
+                color: formData.globalTextColor || '#000000'
+              }}
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                {formData.logo && (
+                  <img 
+                    src={formData.logo} 
+                    alt="Logo" 
+                    className="h-8 w-auto"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
+                <h3 
+                  className="text-xl font-bold"
+                  style={{ color: formData.title_color || formData.globalTextColor || '#000000' }}
+                >
+                  {formData.title || 'Your Site Title'}
+                </h3>
+              </div>
+              <p className="text-sm mb-4">
+                This is how your site title and colors will appear to visitors.
+              </p>
+              {formData.notification && (
+                <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded">
+                  <p className="text-sm text-yellow-800">{formData.notification}</p>
+                </div>
               )}
-              <h3 
-                className="text-xl font-bold"
-                style={{ color: formData.title_color || formData.globalTextColor || '#000000' }}
-              >
-                {formData.title || 'Your Site Title'}
-              </h3>
-            </div>
-            <p className="text-sm mb-4">
-              This is how your site title and colors will appear to visitors.
-            </p>
-            {formData.notification && (
-              <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 rounded">
-                <p className="text-sm text-yellow-800">{formData.notification}</p>
+              <div className="flex space-x-2">
+                <Button 
+                  size="sm"
+                  style={{ 
+                    backgroundColor: formData.globalHighlightColor || '#3b82f6',
+                    borderColor: formData.globalHighlightColor || '#3b82f6'
+                  }}
+                >
+                  Sample Button
+                </Button>
+                <Button size="sm" variant="outline">
+                  Secondary Button
+                </Button>
               </div>
-            )}
-            <div className="flex space-x-2">
-              <Button 
-                size="sm"
-                style={{ 
-                  backgroundColor: formData.globalHighlightColor || '#3b82f6',
-                  borderColor: formData.globalHighlightColor || '#3b82f6'
-                }}
-              >
-                Sample Button
-              </Button>
-              <Button size="sm" variant="outline">
-                Secondary Button
-              </Button>
+              {formData.copyright && (
+                <div className="mt-4 pt-4 border-t">
+                  <p className="text-xs text-gray-500">{formData.copyright}</p>
+                </div>
+              )}
             </div>
-            {formData.copyright && (
-              <div className="mt-4 pt-4 border-t">
-                <p className="text-xs text-gray-500">{formData.copyright}</p>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>

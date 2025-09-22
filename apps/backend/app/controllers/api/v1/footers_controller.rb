@@ -24,10 +24,20 @@ class Api::V1::FootersController < Api::V1::BaseController
 
   # PATCH/PUT /api/v1/communities/:community_id/footer
   def update
-    if @footer.update(footer_params)
-      render_success(@footer, FooterSerializer)
+    if @footer
+      if @footer.update(footer_params)
+        render_success(@footer, FooterSerializer)
+      else
+        render_error("Failed to update footer", @footer.errors.as_json)
+      end
     else
-      render_error("Failed to update footer", @footer.errors.as_json)
+      # Create footer if it doesn't exist
+      @footer = current_community.build_footer(footer_params)
+      if @footer.save
+        render_created(@footer, FooterSerializer)
+      else
+        render_error("Failed to create footer", @footer.errors.as_json)
+      end
     end
   end
 
@@ -47,6 +57,16 @@ class Api::V1::FootersController < Api::V1::BaseController
   end
 
   def footer_params
-    params.require(:footer).permit(:sections)
+    # Allow nested parameters for footer sections, links, and color fields
+    params.require(:footer).permit(
+      :background_color,
+      :text_color,
+      :link_color,
+      :hover_color,
+      sections: [
+        :id, :label,
+        links: [:id, :name, :url, :isExternal, :order]
+      ]
+    )
   end
 end

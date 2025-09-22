@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_23_153500) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_22_080940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,6 +83,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_23_153500) do
     t.jsonb "sections", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "background_color"
+    t.string "text_color"
+    t.string "link_color"
+    t.string "hover_color"
     t.index ["community_id"], name: "index_footers_on_community_id"
     t.index ["sections"], name: "index_footers_on_sections", using: :gin
   end
@@ -140,6 +144,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_23_153500) do
     t.jsonb "profile", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "background_color"
+    t.string "text_color"
+    t.string "link_color"
+    t.string "hover_color"
     t.index ["community_id"], name: "index_topbars_on_community_id"
     t.index ["navigation"], name: "index_topbars_on_navigation", using: :gin
     t.index ["profile"], name: "index_topbars_on_profile", using: :gin

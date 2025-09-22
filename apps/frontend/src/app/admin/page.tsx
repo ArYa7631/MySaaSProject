@@ -51,6 +51,20 @@ export default function AdminDashboard() {
       color: 'bg-blue-500',
     },
     {
+      title: 'Navigation',
+      description: 'Manage topbar and footer navigation',
+      href: '/admin/navigation',
+      icon: Globe,
+      color: 'bg-indigo-500',
+    },
+    {
+      title: 'Content Pages',
+      description: 'Create and manage custom pages',
+      href: '/admin/content-pages',
+      icon: FileText,
+      color: 'bg-teal-500',
+    },
+    {
       title: 'Settings',
       description: 'Manage community settings and branding',
       href: '/admin/settings',

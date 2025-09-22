@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -49,6 +49,18 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
   })
 
   const [isPreviewMode, setIsPreviewMode] = useState(false)
+
+  // Update sectionData when initialData changes (e.g., when selecting a template)
+  useEffect(() => {
+    if (initialData) {
+      setSectionData({
+        name: initialData.name || '',
+        description: initialData.description || '',
+        type: initialData.type || initialData.name || '',
+        content: initialData.content || {},
+      })
+    }
+  }, [initialData])
 
   const handleInputChange = (field: string, value: string) => {
     setSectionData(prev => ({
