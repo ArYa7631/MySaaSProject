@@ -92,7 +92,9 @@ export default function AdminDashboard() {
       {/* Welcome Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.first_name || user?.email}!</h1>
-        <p className="text-gray-600 mt-2">Manage your community and customize your landing page</p>
+        <p className="text-gray-600 mt-2">
+          {user?.admin ? 'Admin' : 'Member'} of {community?.ident || 'your community'} • Manage your community and customize your landing page
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -200,8 +202,18 @@ export default function AdminDashboard() {
               </div>
               
               <div className="flex items-center space-x-4">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-sm font-medium">✓</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Community created</p>
+                  <p className="text-xs text-gray-500">Your community "{community?.ident}" is ready with a beautiful landing page</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 text-sm font-medium">2</span>
+                  <span className="text-blue-600 text-sm font-medium">3</span>
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">Customize your landing page</p>
@@ -214,7 +226,7 @@ export default function AdminDashboard() {
               
               <div className="flex items-center space-x-4">
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                  <span className="text-gray-400 text-sm font-medium">3</span>
+                  <span className="text-gray-400 text-sm font-medium">4</span>
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">Configure settings</p>

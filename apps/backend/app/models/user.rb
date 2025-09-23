@@ -14,6 +14,7 @@ class User < ApplicationRecord
 
   # Default values
   attribute :locale, :string, default: 'en'
+  attribute :admin, :boolean, default: false
 
   # Instance methods
   def as_json(options = {})

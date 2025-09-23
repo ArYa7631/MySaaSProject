@@ -4,6 +4,7 @@ export interface User {
   first_name?: string;
   last_name?: string;
   community_id?: number; // Add community support
+  admin?: boolean; // Add admin status
   created_at: string;
   updated_at: string;
 }
@@ -17,8 +18,9 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   password_confirmation: string;
-  name?: string; // Add community name
-  domain?: string; // Add domain
+  first_name: string;
+  last_name: string;
+  domain: string;
 }
 
 export interface AuthResponse {
@@ -101,8 +103,11 @@ export interface Community {
       linkTitle: string;
     }>;
     navigation_items: Array<{
-      linkHref: string;
-      linkTitle: string;
+      id?: string;
+      name: string;
+      url: string;
+      isExternal?: boolean;
+      order?: number;
     }>;
     profile: Array<{
       linkHref: string;
@@ -112,6 +117,10 @@ export interface Community {
       linkHref: string;
       linkTitle: string;
     }>;
+    background_color?: string;
+    text_color?: string;
+    link_color?: string;
+    hover_color?: string;
     created_at: string;
     updated_at: string;
   };

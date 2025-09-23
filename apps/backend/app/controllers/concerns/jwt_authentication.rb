@@ -27,6 +27,9 @@ module JwtAuthentication
         return
       end
       
+      # Validate user belongs to the correct community based on domain
+      validate_user_community_access!
+      
     rescue JWT::DecodeError => e
       Rails.logger.error "JWT decode error: #{e.message}"
       render_unauthorized('Invalid token')
@@ -59,5 +62,24 @@ module JwtAuthentication
 
   def current_user
     @current_user
+  end
+
+  def validate_user_community_access!
+    return unless @current_user&.community
+
+    # Get the current domain from the request
+    current_domain = request.host
+    
+    # Find the community for the current domain
+    current_community = Community.find_by(domain: current_domain)
+    
+    # If no community found for this domain, allow access (might be localhost or unknown domain)
+    return unless current_community
+    
+    # Check if the user belongs to the community for this domain
+    unless @current_user.community_id == current_community.id
+      Rails.logger.warn "User #{@current_user.id} attempted to access community #{current_community.id} but belongs to community #{@current_user.community_id}"
+      render_unauthorized('Access denied: User does not belong to this community')
+    end
   end
 end

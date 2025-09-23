@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -11,11 +11,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useSuperAdmin } from '@/hooks/use-super-admin'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   password_confirmation: z.string(),
+  first_name: z.string().min(1, 'First name is required'),
+  last_name: z.string().min(1, 'Last name is required'),
+  domain: z.string().min(1, 'Domain is required').regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*$/, 'Invalid domain format'),
 }).refine((data) => data.password === data.password_confirmation, {
   message: "Passwords don't match",
   path: ["password_confirmation"],
@@ -27,6 +32,15 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const { register: registerUser } = useAuth()
   const router = useRouter()
+  const { isSuperAdmin, isLoading: superAdminLoading, error: superAdminError } = useSuperAdmin()
+
+  // Redirect non-super-admin users
+  useEffect(() => {
+    if (!superAdminLoading && !isSuperAdmin) {
+      // Redirect to home page or show access denied
+      router.push('/')
+    }
+  }, [isSuperAdmin, superAdminLoading, router])
 
   const {
     register,
@@ -39,11 +53,53 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     try {
       setError('')
-      await registerUser(data)
-      router.push('/admin') // Redirect to admin instead of dashboard
+      const result = await registerUser(data)
+      
+      // Check if we need to redirect to a different domain
+      if (result.redirect_url && result.redirect_url !== window.location.origin) {
+        // Redirect to the new community's domain
+        window.location.href = `${result.redirect_url}/admin`
+      } else {
+        // Stay on the same domain
+        router.push('/admin')
+      }
     } catch (err: any) {
       setError(err.message || 'Registration failed')
     }
+  }
+
+  // Show loading spinner while checking super admin status
+  if (superAdminLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <LoadingSpinner size={48} />
+          <p className="mt-4 text-gray-600">Loading community data...</p>
+          <p className="mt-2 text-sm text-gray-500">Please wait while we verify your access permissions</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show access denied if not super admin
+  if (!isSuperAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center text-red-600">Access Denied</CardTitle>
+            <CardDescription className="text-center">
+              This page is only accessible from the main platform domain.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Link href="/">
+              <Button variant="outline">Go to Home</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -63,6 +119,39 @@ export default function RegisterPage() {
               </Alert>
             )}
             
+            {/* First Name */}
+            <div className="space-y-2">
+              <label htmlFor="first_name" className="text-sm font-medium">
+                First Name
+              </label>
+              <Input
+                id="first_name"
+                type="text"
+                placeholder="Enter your first name"
+                {...register('first_name')}
+              />
+              {errors.first_name && (
+                <p className="text-sm text-red-600">{errors.first_name.message}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div className="space-y-2">
+              <label htmlFor="last_name" className="text-sm font-medium">
+                Last Name
+              </label>
+              <Input
+                id="last_name"
+                type="text"
+                placeholder="Enter your last name"
+                {...register('last_name')}
+              />
+              {errors.last_name && (
+                <p className="text-sm text-red-600">{errors.last_name.message}</p>
+              )}
+            </div>
+
+            {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
                 Email
@@ -78,6 +167,26 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* Domain URL */}
+            <div className="space-y-2">
+              <label htmlFor="domain" className="text-sm font-medium">
+                Domain URL
+              </label>
+              <Input
+                id="domain"
+                type="text"
+                placeholder="your-domain-name"
+                {...register('domain')}
+              />
+              {errors.domain && (
+                <p className="text-sm text-red-600">{errors.domain.message}</p>
+              )}
+              <p className="text-xs text-gray-500">
+                This will be your community's domain (e.g., your-domain-name)
+              </p>
+            </div>
+
+            {/* Password */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">
                 Password
@@ -93,6 +202,7 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* Confirm Password */}
             <div className="space-y-2">
               <label htmlFor="password_confirmation" className="text-sm font-medium">
                 Confirm Password
@@ -124,5 +234,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-
-

@@ -3,17 +3,37 @@ class Api::V1::RegistrationsController < ApplicationController
   respond_to :json
 
   def create
-
     begin
+      # Check if the current community allows registration (super admin only)
+      current_community = get_current_community
+      if current_community && !current_community.marketplace_configuration&.is_super_admin
+        return render json: {
+          status: { code: 403, message: 'Registration is not available for this community' },
+          errors: ['Only super admin communities can accept new registrations']
+        }, status: :forbidden
+      end
+
       user = User.new(user_params)
 
       if user.save
         Rails.logger.info "User created successfully!"
+        
+        # Create community with default data
+        community = CommunitySetupService.create_community_with_defaults(
+          user, 
+          params[:user][:domain], 
+          "#{user.first_name} #{user.last_name}'s Community"
+        )
+        
+        Rails.logger.info "Community created successfully for user #{user.id}: #{community.domain}"
+        
         render json: {
           status: { code: 200, message: 'Signed up successfully.' },
           data: {
             user: user,
-            token: user.generate_jwt
+            community: community,
+            token: user.generate_jwt,
+            redirect_url: build_community_url(community)
           }
         }
       else
@@ -29,6 +49,13 @@ class Api::V1::RegistrationsController < ApplicationController
         status: { code: 422, message: "Missing required parameters." },
         errors: [e.message]
       }, status: :unprocessable_content
+    rescue => e
+      Rails.logger.error "Registration failed: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      render json: {
+        status: { code: 500, message: "Registration failed. Please try again." },
+        errors: ["An unexpected error occurred during registration."]
+      }, status: :internal_server_error
     end
   end
 
@@ -36,5 +63,26 @@ class Api::V1::RegistrationsController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name)
+  end
+
+  def get_current_community
+    # Get the current domain from the request
+    domain = request.host
+    
+    # Find the community by domain
+    Community.find_by(domain: domain)
+  end
+
+  def build_community_url(community)
+    # Determine the protocol and port based on environment
+    protocol = Rails.env.production? ? 'https' : 'http'
+    port = Rails.env.production? ? '' : ':3000'
+    
+    # Build the URL for the new community
+    if community.domain == 'localhost'
+      "#{protocol}://localhost#{port}"
+    else
+      "#{protocol}://#{community.domain}#{port}"
+    end
   end
 end

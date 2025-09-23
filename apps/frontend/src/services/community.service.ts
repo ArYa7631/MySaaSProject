@@ -67,9 +67,7 @@ export class CommunityService {
 
   // Get community by domain
   static async getCommunityByDomain(domain: string): Promise<Community> {
-    console.log('CommunityService.getCommunityByDomain - Making API call to:', `/communities/by-domain/${domain}`)
     const response = await apiClientMethods.get<Community>(`/communities/by-domain/${domain}`)
-    console.log('CommunityService.getCommunityByDomain - Response:', response)
     return response.data
   }
 

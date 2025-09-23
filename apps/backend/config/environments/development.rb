@@ -45,6 +45,9 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
+  
+  # Allow requests from test domains
+  config.hosts << "www.aryasoftwaretech.com"
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

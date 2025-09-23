@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Community } from '@mysaasproject/shared'
 import { CommunityService } from '@/services/community.service'

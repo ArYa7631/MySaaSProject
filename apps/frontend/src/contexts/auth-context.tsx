@@ -9,7 +9,7 @@ interface AuthContextType {
   community: Community | null
   loading: boolean
   login: (credentials: LoginCredentials) => Promise<void>
-  register: (credentials: RegisterCredentials) => Promise<void>
+  register: (credentials: RegisterCredentials) => Promise<{ redirect_url: string }>
   logout: () => Promise<void>
   checkAuth: () => Promise<void>
 }
@@ -100,17 +100,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (credentials: RegisterCredentials) => {
     try {
-      const response = await apiClient.post<{ data: { user: User; token: string } }>(
+      const response = await apiClient.post<{ data: { user: User; community: Community; token: string; redirect_url: string } }>(
         '/auth/sign_up',
         { user: credentials }
       )
       
-      const { user, token } = response.data
+      const { user, community, token, redirect_url } = response.data
       
       localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('community', JSON.stringify(community))
       localStorage.setItem('authToken', token)
       setUser(user)
-      // Note: Community will be created separately or fetched later
+      setCommunity(community)
+      
+      // Return redirect URL for the calling component to handle
+      return { redirect_url }
     } catch (error: any) {
       if (error.response?.data?.status?.message) {
         throw new Error(error.response.data.status.message)
