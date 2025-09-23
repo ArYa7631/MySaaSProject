@@ -23,6 +23,7 @@ const sectionTypes = [
   { value: 'HeroSection', label: 'Hero Section', description: 'Full-screen hero with background image/video', icon: '🎯' },
   { value: 'Jumbotron', label: 'Jumbotron', description: 'Simple hero section with title and buttons', icon: '📢' },
   { value: 'Gallery', label: 'Gallery', description: 'Image gallery with multiple photos', icon: '🖼️' },
+  { value: 'VideoGallery', label: 'Video Gallery', description: 'Video gallery with multiple YouTube videos', icon: '🎬' },
   { value: 'InfoColumns', label: 'Info Columns', description: 'Information displayed in columns', icon: '📊' },
   { value: 'ContactForm', label: 'Contact Form', description: 'Contact form for visitors', icon: '📝' },
   { value: 'Testimonials', label: 'Testimonials', description: 'Customer testimonials and reviews', icon: '⭐' },
@@ -318,6 +319,118 @@ export const SectionBuilder: React.FC<SectionBuilderProps> = ({
                     placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
                     rows={3}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'VideoGallery':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="videoGalleryTitle">Gallery Title (optional)</Label>
+              <Input
+                id="videoGalleryTitle"
+                value={sectionData.content.title || ''}
+                onChange={(e) => handleContentChange('title', e.target.value)}
+                placeholder="Our Video Gallery"
+              />
+            </div>
+            <div>
+              <Label>YouTube Videos</Label>
+              <div className="space-y-2">
+                {/* Current Videos */}
+                {sectionData.content.videos && sectionData.content.videos.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <Label>Current Videos ({sectionData.content.videos.length})</Label>
+                    {sectionData.content.videos.map((video: any, index: number) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
+                        <div className="w-16 h-12 bg-gray-200 rounded flex items-center justify-center">
+                          <span className="text-xs text-gray-500">🎬</span>
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <Input
+                            value={video.url || ''}
+                            onChange={(e) => {
+                              const updatedVideos = [...sectionData.content.videos]
+                              updatedVideos[index] = { ...updatedVideos[index], url: e.target.value }
+                              handleContentChange('videos', updatedVideos)
+                            }}
+                            placeholder="YouTube URL"
+                            className="text-sm"
+                          />
+                          <Input
+                            value={video.title || ''}
+                            onChange={(e) => {
+                              const updatedVideos = [...sectionData.content.videos]
+                              updatedVideos[index] = { ...updatedVideos[index], title: e.target.value }
+                              handleContentChange('videos', updatedVideos)
+                            }}
+                            placeholder="Video title (optional)"
+                            className="text-sm"
+                          />
+                          <Input
+                            value={video.description || ''}
+                            onChange={(e) => {
+                              const updatedVideos = [...sectionData.content.videos]
+                              updatedVideos[index] = { ...updatedVideos[index], description: e.target.value }
+                              handleContentChange('videos', updatedVideos)
+                            }}
+                            placeholder="Description (optional)"
+                            className="text-sm"
+                          />
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const updatedVideos = sectionData.content.videos.filter((_: any, i: number) => i !== index)
+                            handleContentChange('videos', updatedVideos)
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Add New Video Button */}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const currentVideos = sectionData.content.videos || []
+                    const newVideo = { url: '', title: '', description: '' }
+                    handleContentChange('videos', [...currentVideos, newVideo])
+                  }}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Video
+                </Button>
+                
+                {/* Manual URL Input */}
+                <div className="mt-2">
+                  <Label htmlFor="videoUrls">Or enter YouTube URLs manually (one per line):</Label>
+                  <Textarea
+                    id="videoUrls"
+                    value={sectionData.content.videos?.map((video: any) => video.url).join('\n') || ''}
+                    onChange={(e) => {
+                      const urls = e.target.value.split('\n').filter(url => url.trim())
+                      const videos = urls.map((url, index) => ({ 
+                        url: url.trim(), 
+                        title: `Video ${index + 1}`,
+                        description: ''
+                      }))
+                      handleContentChange('videos', videos)
+                    }}
+                    placeholder="https://www.youtube.com/watch?v=...&#10;https://youtu.be/..."
+                    rows={3}
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Only YouTube URLs are supported
+                  </p>
                 </div>
               </div>
             </div>

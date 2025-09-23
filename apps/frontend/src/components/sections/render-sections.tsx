@@ -2,6 +2,7 @@ import React from 'react'
 import { LandingPageSection, MarketplaceConfiguration } from '@mysaasproject/shared'
 import { Jumbotron } from './jumbotron'
 import { Gallery } from './gallery'
+import { VideoGallery } from './video-gallery'
 import { InfoColumns } from './info-columns'
 import { ContactForm } from './contact-form'
 import { HeroSection } from './hero-section'
@@ -63,6 +64,20 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, market
             : []
         }
         return <Gallery key={section.id} {...galleryProps} marketplaceConfig={marketplaceConfig} />
+      case 'VideoGallery':
+        // Handle video gallery with videos array
+        const videos = section.content?.videos || []
+        const videoGalleryProps = {
+          ...section.content,
+          videos: Array.isArray(videos) 
+            ? videos.map((video: any) => ({
+                url: video?.url || '',
+                title: video?.title || '',
+                description: video?.description || ''
+              }))
+            : []
+        }
+        return <VideoGallery key={section.id} {...videoGalleryProps} marketplaceConfig={marketplaceConfig} />
       case 'InfoColumns':
         return <InfoColumns key={section.id} {...section.content} marketplaceConfig={marketplaceConfig} />
       case 'ContactForm':
@@ -114,7 +129,7 @@ export const RenderSections: React.FC<RenderSectionsProps> = ({ sections, market
                 Section type "{sectionType}" is not supported yet.
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Available types: Jumbotron, HeroSection, Gallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription, VideoSection, StatsSection, TeamSection, FAQSection, NewsletterSection, SocialProof, CustomSection
+                Available types: Jumbotron, HeroSection, Gallery, VideoGallery, InfoColumns, ContactForm, Testimonials, Features, Pricing, ImgDescription, VideoSection, StatsSection, TeamSection, FAQSection, NewsletterSection, SocialProof, CustomSection
               </p>
             </div>
           </div>
