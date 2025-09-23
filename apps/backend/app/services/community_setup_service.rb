@@ -526,6 +526,217 @@ class CommunitySetupService
             "successMessage" => "Thank you for subscribing! Check your email for confirmation."
           },
           "description" => "Newsletter subscription for updates"
+        },
+        {
+          "id" => "process-section",
+          "name" => "Our Process",
+          "type" => "ProcessSection",
+          "content" => {
+            "title" => "How We Work",
+            "subtitle" => "A Proven Process for Success",
+            "description" => "Our systematic approach ensures every project is delivered on time, within budget, and exceeds expectations.",
+            "steps" => [
+              {
+                "number" => "01",
+                "title" => "Discovery & Planning",
+                "description" => "We start by understanding your vision, goals, and requirements through detailed consultation and analysis.",
+                "icon" => "🔍",
+                "imageUrl" => "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              },
+              {
+                "number" => "02",
+                "title" => "Design & Prototyping",
+                "description" => "Our design team creates wireframes, mockups, and prototypes to visualize your project before development begins.",
+                "icon" => "🎨",
+                "imageUrl" => "https://images.unsplash.com/photo-1558655146-d09347e92766?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              },
+              {
+                "number" => "03",
+                "title" => "Development & Testing",
+                "description" => "We build your solution using cutting-edge technologies with rigorous testing at every stage of development.",
+                "icon" => "⚙️",
+                "imageUrl" => "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              },
+              {
+                "number" => "04",
+                "title" => "Launch & Support",
+                "description" => "We deploy your project and provide ongoing support, maintenance, and optimization to ensure long-term success.",
+                "icon" => "🚀",
+                "imageUrl" => "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              }
+            ]
+          },
+          "description" => "Step-by-step process visualization"
+        },
+        {
+          "id" => "technologies-section",
+          "name" => "Technologies We Use",
+          "type" => "TechStack",
+          "content" => {
+            "title" => "Our Technology Stack",
+            "subtitle" => "Built with Modern, Reliable Technologies",
+            "description" => "We leverage the latest technologies and frameworks to deliver robust, scalable, and maintainable solutions.",
+            "categories" => [
+              {
+                "name" => "Frontend",
+                "technologies" => [
+                  {"name" => "React", "logo" => "⚛️", "description" => "Modern UI library"},
+                  {"name" => "Next.js", "logo" => "▲", "description" => "Full-stack React framework"},
+                  {"name" => "TypeScript", "logo" => "🔷", "description" => "Type-safe JavaScript"},
+                  {"name" => "Tailwind CSS", "logo" => "🎨", "description" => "Utility-first CSS"}
+                ]
+              },
+              {
+                "name" => "Backend",
+                "technologies" => [
+                  {"name" => "Node.js", "logo" => "🟢", "description" => "JavaScript runtime"},
+                  {"name" => "Ruby on Rails", "logo" => "💎", "description" => "Web application framework"},
+                  {"name" => "Python", "logo" => "🐍", "description" => "Versatile programming language"},
+                  {"name" => "PostgreSQL", "logo" => "🐘", "description" => "Advanced database"}
+                ]
+              },
+              {
+                "name" => "Cloud & DevOps",
+                "technologies" => [
+                  {"name" => "AWS", "logo" => "☁️", "description" => "Cloud computing platform"},
+                  {"name" => "Docker", "logo" => "🐳", "description" => "Containerization"},
+                  {"name" => "Kubernetes", "logo" => "⚓", "description" => "Container orchestration"},
+                  {"name" => "CI/CD", "logo" => "🔄", "description" => "Continuous integration"}
+                ]
+              }
+            ]
+          },
+          "description" => "Technology stack showcase"
+        },
+        {
+          "id" => "case-studies-section",
+          "name" => "Success Stories",
+          "type" => "CaseStudies",
+          "content" => {
+            "title" => "Success Stories",
+            "subtitle" => "Real Results for Real Businesses",
+            "description" => "See how we've helped businesses transform their digital presence and achieve their goals.",
+            "caseStudies" => [
+              {
+                "title" => "E-commerce Platform Transformation",
+                "client" => "TechCorp Inc.",
+                "industry" => "E-commerce",
+                "challenge" => "Legacy system causing performance issues and poor user experience",
+                "solution" => "Complete platform rebuild with modern architecture and mobile-first design",
+                "results" => [
+                  "300% increase in page load speed",
+                  "150% boost in mobile conversions",
+                  "40% reduction in bounce rate"
+                ],
+                "imageUrl" => "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "logo" => "🛒"
+              },
+              {
+                "title" => "Mobile Banking App Development",
+                "client" => "FinanceFirst",
+                "industry" => "Fintech",
+                "challenge" => "Need for secure, user-friendly mobile banking solution",
+                "solution" => "Cross-platform mobile app with advanced security features and intuitive UX",
+                "results" => [
+                  "50% increase in mobile transactions",
+                  "99.9% uptime achieved",
+                  "4.8/5 user rating on app stores"
+                ],
+                "imageUrl" => "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "logo" => "🏦"
+              },
+              {
+                "title" => "AI-Powered Analytics Dashboard",
+                "client" => "DataDriven Corp",
+                "industry" => "Analytics",
+                "challenge" => "Complex data visualization and real-time insights needed",
+                "solution" => "Custom dashboard with AI-driven insights and predictive analytics",
+                "results" => [
+                  "75% faster decision making",
+                  "60% improvement in data accuracy",
+                  "200% increase in user engagement"
+                ],
+                "imageUrl" => "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "logo" => "📊"
+              }
+            ]
+          },
+          "description" => "Detailed case studies with results"
+        },
+        {
+          "id" => "awards-section",
+          "name" => "Awards & Recognition",
+          "type" => "AwardsSection",
+          "content" => {
+            "title" => "Awards & Recognition",
+            "subtitle" => "Recognized for Excellence",
+            "description" => "Our commitment to quality and innovation has earned us recognition from industry leaders and clients.",
+            "awards" => [
+              {
+                "title" => "Best Web Development Agency 2024",
+                "organization" => "Tech Excellence Awards",
+                "year" => "2024",
+                "description" => "Recognized for outstanding web development services and client satisfaction",
+                "icon" => "🏆",
+                "imageUrl" => "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+              },
+              {
+                "title" => "Top Mobile App Developer",
+                "organization" => "Mobile Innovation Awards",
+                "year" => "2024",
+                "description" => "Awarded for innovative mobile solutions and exceptional user experience design",
+                "icon" => "📱",
+                "imageUrl" => "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+              },
+              {
+                "title" => "Excellence in Cloud Solutions",
+                "organization" => "Cloud Computing Society",
+                "year" => "2023",
+                "description" => "Recognized for innovative cloud architecture and scalable solutions",
+                "icon" => "☁️",
+                "imageUrl" => "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+              },
+              {
+                "title" => "Client Satisfaction Award",
+                "organization" => "Business Excellence Forum",
+                "year" => "2023",
+                "description" => "Achieved 98% client satisfaction rate across all projects",
+                "icon" => "⭐",
+                "imageUrl" => "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+              }
+            ]
+          },
+          "description" => "Industry awards and recognition showcase"
+        },
+        {
+          "id" => "cta-section",
+          "name" => "Ready to Get Started?",
+          "type" => "CallToAction",
+          "content" => {
+            "title" => "Ready to Transform Your Digital Presence?",
+            "subtitle" => "Let's Build Something Amazing Together",
+            "description" => "Join hundreds of satisfied clients who have transformed their businesses with our innovative solutions. Get started today with a free consultation.",
+            "primaryButton" => {
+              "url" => "/contact",
+              "text" => "Start Your Project",
+              "style" => "primary"
+            },
+              "secondaryButton" => {
+              "url" => "/portfolio",
+              "text" => "View Our Work",
+              "style" => "secondary"
+            },
+            "backgroundImage" => "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+            "overlayColor" => "rgba(0, 0, 0, 0.6)",
+            "textColor" => "#ffffff",
+            "features" => [
+              "Free consultation",
+              "No hidden fees",
+              "24/7 support",
+              "Money-back guarantee"
+            ]
+          },
+          "description" => "Final call-to-action with compelling offer"
         }
       ]
     )

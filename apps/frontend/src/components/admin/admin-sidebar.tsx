@@ -13,7 +13,8 @@ import {
   Palette,
   BarChart3,
   Image,
-  Navigation
+  Navigation,
+  MessageSquare
 } from 'lucide-react'
 
 const navigation = [
@@ -36,6 +37,11 @@ const navigation = [
     name: 'Content Pages',
     href: '/admin/content-pages',
     icon: FileText,
+  },
+  {
+    name: 'Contact Inquiries',
+    href: '/admin/contacts',
+    icon: MessageSquare,
   },
   {
     name: 'Settings',

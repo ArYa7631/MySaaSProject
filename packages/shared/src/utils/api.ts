@@ -13,14 +13,35 @@ export class ApiClient {
       withCredentials: true,
     });
 
+    // Request interceptor to add auth token
+    this.client.interceptors.request.use(
+      (config) => {
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            config.headers = {
+              ...config.headers,
+              Authorization: `Bearer ${token}`,
+            };
+          }
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
     // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
           // Remove user data on 401 errors
-          localStorage.removeItem('user');
-          window.location.href = '/login';
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('user');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('community');
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(error);
       }

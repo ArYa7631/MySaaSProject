@@ -2,6 +2,7 @@ class Api::V1::LandingPagesController < Api::V1::BaseController
   # Skip authentication for development
   skip_before_action :authenticate_user_from_jwt! if Rails.env.development?
   before_action :require_community
+  before_action :require_community_access
   before_action :set_landing_page, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities/:community_id/landing_page

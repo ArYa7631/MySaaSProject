@@ -1,5 +1,9 @@
 class Api::V1::ContactsController < Api::V1::BaseController
-  before_action :require_community
+  # Skip authentication for public contact form submission
+  skip_before_action :authenticate_user_from_jwt!, only: [:create]
+  
+  before_action :require_community, except: [:create]
+  before_action :require_community_access, except: [:create]
   before_action :set_contact, only: [:show, :destroy]
 
   # GET /api/v1/communities/:community_id/contacts
@@ -19,7 +23,9 @@ class Api::V1::ContactsController < Api::V1::BaseController
 
   # POST /api/v1/communities/:community_id/contacts
   def create
-    @contact = current_community.contacts.build(contact_params)
+    # For public contact form, we need to find the community from the URL params
+    community = Community.find(params[:community_id])
+    @contact = community.contacts.build(contact_params)
     
     if @contact.save
       render_created(@contact, ContactSerializer)

@@ -1,5 +1,6 @@
 class Api::V1::FootersController < Api::V1::BaseController
   before_action :require_community
+  before_action :require_community_access
   before_action :set_footer, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities/:community_id/footer

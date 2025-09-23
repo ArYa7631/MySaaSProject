@@ -1,5 +1,6 @@
 class Api::V1::ContentPagesController < Api::V1::BaseController
   before_action :require_community
+  before_action :require_community_access
   before_action :set_content_page, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities/:community_id/content_pages

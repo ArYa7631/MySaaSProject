@@ -1,5 +1,6 @@
 class Api::V1::CommunityTranslationsController < Api::V1::BaseController
   before_action :require_community
+  before_action :require_community_access
   before_action :set_translation, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities/:community_id/translations

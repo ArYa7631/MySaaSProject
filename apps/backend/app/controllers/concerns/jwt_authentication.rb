@@ -65,7 +65,7 @@ module JwtAuthentication
   end
 
   def validate_user_community_access!
-    return unless @current_user&.community
+    return unless @current_user
 
     # Get the current domain from the request
     current_domain = request.host
@@ -76,9 +76,16 @@ module JwtAuthentication
     # If no community found for this domain, allow access (might be localhost or unknown domain)
     return unless current_community
     
+    # If user has no community assigned, deny access to any specific community
+    if @current_user.community_id.nil?
+      Rails.logger.warn "User #{@current_user.id} (#{@current_user.email}) has no community assigned but attempted to access community #{current_community.id}"
+      render_unauthorized('Access denied: User is not assigned to any community')
+      return
+    end
+    
     # Check if the user belongs to the community for this domain
     unless @current_user.community_id == current_community.id
-      Rails.logger.warn "User #{@current_user.id} attempted to access community #{current_community.id} but belongs to community #{@current_user.community_id}"
+      Rails.logger.warn "User #{@current_user.id} (#{@current_user.email}) attempted to access community #{current_community.id} but belongs to community #{@current_user.community_id}"
       render_unauthorized('Access denied: User does not belong to this community')
     end
   end

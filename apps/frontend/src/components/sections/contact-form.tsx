@@ -7,10 +7,13 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ContactService } from '@/services/contact.service'
+import { useCommunityContext } from '@/hooks/use-community-context'
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  name: z.string().min(2, 'Name must be at least 2 characters').optional().or(z.literal('')),
   email: z.string().email('Invalid email address'),
+  contact_number: z.string().optional().or(z.literal('')),
   message: z.string().min(10, 'Message must be at least 10 characters'),
 })
 
@@ -28,6 +31,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const { community } = useCommunityContext()
 
   const {
     register,
@@ -39,20 +44,36 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   })
 
   const onSubmit = async (data: ContactForm) => {
+    if (!community) {
+      setSubmitStatus('error')
+      setErrorMessage('Community not found. Please refresh the page and try again.')
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus('idle')
+    setErrorMessage('')
 
     try {
-      // TODO: Implement actual contact form submission
-      console.log('Contact form data:', data)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Prepare data for API
+      const contactData = {
+        name: data.name || undefined,
+        email: data.email,
+        contact_number: data.contact_number || undefined,
+        message: data.message,
+      }
+
+      await ContactService.createContact(community.id, contactData)
       
       setSubmitStatus('success')
       reset()
-    } catch (error) {
+    } catch (error: any) {
       setSubmitStatus('error')
+      setErrorMessage(
+        error?.response?.data?.message || 
+        error?.message || 
+        'Failed to submit contact form. Please try again.'
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -83,7 +104,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           {submitStatus === 'error' && (
             <Alert variant="destructive" className="mb-6">
               <AlertDescription>
-                Something went wrong. Please try again.
+                {errorMessage || 'Something went wrong. Please try again.'}
               </AlertDescription>
             </Alert>
           )}
@@ -92,7 +113,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Name
+                  Name (Optional)
                 </label>
                 <Input
                   id="name"
@@ -107,7 +128,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email
+                  Email *
                 </label>
                 <Input
                   id="email"
@@ -122,8 +143,23 @@ export const ContactForm: React.FC<ContactFormProps> = ({
             </div>
 
             <div>
+              <label htmlFor="contact_number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Phone Number (Optional)
+              </label>
+              <Input
+                id="contact_number"
+                type="tel"
+                placeholder="Your phone number"
+                {...register('contact_number')}
+              />
+              {errors.contact_number && (
+                <p className="text-sm text-red-600 mt-1">{errors.contact_number.message}</p>
+              )}
+            </div>
+
+            <div>
               <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Message
+                Message *
               </label>
               <textarea
                 id="message"

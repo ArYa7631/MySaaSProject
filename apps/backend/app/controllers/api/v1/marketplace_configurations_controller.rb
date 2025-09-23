@@ -2,6 +2,7 @@ class Api::V1::MarketplaceConfigurationsController < Api::V1::BaseController
   # Skip authentication for development and production (for now)
   skip_before_action :authenticate_user_from_jwt!
   before_action :require_community
+  before_action :require_community_access
   before_action :set_marketplace_configuration, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities/:community_id/marketplace_configuration
