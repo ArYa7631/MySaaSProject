@@ -13,11 +13,13 @@ dist/
 # Environment variables
 .env
 .env.local
+.env.prod
 .env.development.local
 .env.test.local
 .env.production.local
 apps/*/.env
 apps/*/.env.local
+apps/*/.env.prod
 
 # Logs
 npm-debug.log*

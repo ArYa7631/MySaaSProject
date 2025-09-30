@@ -8,8 +8,9 @@ services:
       dockerfile: apps/frontend/Dockerfile
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=https://yourdomain.com/api
-      - NEXT_PUBLIC_APP_URL=https://yourdomain.com
+      # Use relative URLs for multi-tenant setup (supports multiple domains)
+      - NEXT_PUBLIC_API_URL=/api
+      - NEXT_PUBLIC_APP_URL=
     networks:
       - mysaasproject-network
     restart: unless-stopped
