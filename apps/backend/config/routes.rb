@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # Public endpoints (no community context needed) - must come before nested resources
-      get 'communities/by-domain/:domain', to: 'communities#by_domain'
+      get 'communities/by-domain', to: 'communities#by_domain'
       
       # Communities with nested resources
       resources :communities do

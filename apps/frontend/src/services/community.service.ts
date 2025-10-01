@@ -67,7 +67,8 @@ export class CommunityService {
 
   // Get community by domain
   static async getCommunityByDomain(domain: string): Promise<Community> {
-    const response = await apiClientMethods.get<Community>(`/communities/by-domain/${domain}`)
+    // Use query parameter to avoid Rails format interpretation of .com/.net
+    const response = await apiClientMethods.get<Community>(`/communities/by-domain?domain=${encodeURIComponent(domain)}`)
     return response.data
   }
 

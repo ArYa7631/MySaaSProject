@@ -14,9 +14,11 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     render_success(communities, CommunitySerializer, options)
   end
 
-  # GET /api/v1/communities/by-domain/:domain
+  # GET /api/v1/communities/by-domain?domain=example.com
   def by_domain
+    # Use query parameter to avoid Rails format interpretation
     domain = params[:domain]
+    
     @community = Community.find_by(domain: domain, is_enabled: true)
     
     unless @community
