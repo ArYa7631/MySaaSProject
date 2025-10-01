@@ -2,7 +2,9 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { useToast } from '@/hooks/use-toast'
 
 // API Configuration
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1`
+// For production with relative URLs: NEXT_PUBLIC_API_URL should be '/api/v1'
+// For development: defaults to 'http://localhost:3001/api/v1'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
 const API_TIMEOUT = 30000 // 30 seconds
 
 // Request/Response interceptors

@@ -1,5 +1,11 @@
 FROM node:18-alpine
 
+# Accept build arguments from docker-compose
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+
 WORKDIR /app
 
 # Copy all package files
@@ -24,5 +30,5 @@ RUN yarn build
 EXPOSE 3000
 ENV PORT=3000
 
-# Start (next binary is in node_modules/.bin/)
+# Start
 CMD ["./node_modules/.bin/next", "start"]

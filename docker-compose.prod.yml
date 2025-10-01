@@ -6,11 +6,14 @@ services:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://aryasoftwaretech.com/api/v1
+        - NEXT_PUBLIC_APP_URL=http://aryasoftwaretech.com
     environment:
       - NODE_ENV=production
       # Use relative URLs for multi-tenant setup (supports multiple domains)
-      - NEXT_PUBLIC_API_URL=/api
-      - NEXT_PUBLIC_APP_URL=
+      - NEXT_PUBLIC_API_URL=http://aryasoftwaretech.com/api/v1
+      - NEXT_PUBLIC_APP_URL=http://aryasoftwaretech.com
     networks:
       - mysaasproject-network
     restart: unless-stopped
