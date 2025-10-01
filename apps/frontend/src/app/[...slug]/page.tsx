@@ -51,7 +51,7 @@ export default function DynamicContentPage() {
     setIsError(false)
     
     try {
-      const apiBaseUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/v1`
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages?end_point=${encodeURIComponent(endpoint)}&active_only=true`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
