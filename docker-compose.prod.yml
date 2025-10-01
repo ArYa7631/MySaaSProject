@@ -7,13 +7,13 @@ services:
       context: .
       dockerfile: apps/frontend/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://aryasoftwaretech.com/api/v1
-        - NEXT_PUBLIC_APP_URL=http://aryasoftwaretech.com
+        - NEXT_PUBLIC_API_URL=https://aryasoftwaretech.com/api/v1
+        - NEXT_PUBLIC_APP_URL=https://aryasoftwaretech.com
     environment:
       - NODE_ENV=production
       # Use relative URLs for multi-tenant setup (supports multiple domains)
-      - NEXT_PUBLIC_API_URL=http://aryasoftwaretech.com/api/v1
-      - NEXT_PUBLIC_APP_URL=http://aryasoftwaretech.com
+      - NEXT_PUBLIC_API_URL=https://aryasoftwaretech.com/api/v1
+      - NEXT_PUBLIC_APP_URL=https://aryasoftwaretech.com
     networks:
       - mysaasproject-network
     restart: unless-stopped
@@ -119,8 +119,9 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/ssl:/etc/letsencrypt
       - ./nginx/logs:/var/log/nginx
+      - ./nginx/webroot:/var/www/html
     depends_on:
       - frontend
       - backend
