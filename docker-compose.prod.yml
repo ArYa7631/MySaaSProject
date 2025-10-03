@@ -10,11 +10,13 @@ services:
         # Use relative URLs for multi-tenant setup (supports any domain)
         - NEXT_PUBLIC_API_URL=/api/v1
         - NEXT_PUBLIC_APP_URL=
+        - NEXT_PUBLIC_SUPER_ADMIN_DOMAIN=${NEXT_PUBLIC_SUPER_ADMIN_DOMAIN}
     environment:
       - NODE_ENV=production
       # Use relative URLs for multi-tenant setup (supports multiple domains)
       - NEXT_PUBLIC_API_URL=/api/v1
       - NEXT_PUBLIC_APP_URL=
+      - NEXT_PUBLIC_SUPER_ADMIN_DOMAIN=${NEXT_PUBLIC_SUPER_ADMIN_DOMAIN}
     networks:
       - mysaasproject-network
     restart: unless-stopped

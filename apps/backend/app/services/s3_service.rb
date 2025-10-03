@@ -29,8 +29,8 @@ class S3Service
           acl: 'public-read'
         )
 
-        # Generate public URL
-        url = "https://#{S3_BUCKET}.s3.#{ENV['S3_REGION']}.amazonaws.com/#{key}"
+        # Generate public URL (using path-style to support bucket names with dots)
+        url = "https://s3.#{ENV['S3_REGION']}.amazonaws.com/#{S3_BUCKET}/#{key}"
 
         {
           success: true,
@@ -136,7 +136,7 @@ class S3Service
         images = response.contents.map do |object|
           {
             key: object.key,
-            url: "https://#{S3_BUCKET}.s3.#{ENV['S3_REGION']}.amazonaws.com/#{object.key}",
+            url: "https://s3.#{ENV['S3_REGION']}.amazonaws.com/#{S3_BUCKET}/#{object.key}",
             filename: File.basename(object.key),
             size: object.size,
             last_modified: object.last_modified

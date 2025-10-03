@@ -18,14 +18,8 @@ export function DomainRedirect({ children }: DomainRedirectProps) {
       const currentDomain = window.location.hostname
       const expectedDomain = community.domain
 
-      // If we're on localhost but the community domain is not localhost, redirect
-      if (currentDomain === 'localhost' && expectedDomain !== 'localhost') {
-        const protocol = window.location.protocol
-        const port = window.location.port
-        const redirectUrl = `${protocol}//${expectedDomain}${port ? `:${port}` : ''}${window.location.pathname}`
-        
-        setIsRedirecting(true)
-        window.location.href = redirectUrl
+      // Skip redirects when on localhost (for development)
+      if (currentDomain === 'localhost') {
         return
       }
 

@@ -59,9 +59,15 @@ export function useSuperAdmin(): UseSuperAdminReturn {
         } else {
           // For non-localhost domains, check if it's a super admin domain
           // This would typically be your main platform domain
-          const isMainDomain = currentDomain === process.env.NEXT_PUBLIC_SUPER_ADMIN_DOMAIN
+          const superAdminDomain = process.env.NEXT_PUBLIC_SUPER_ADMIN_DOMAIN
+          const isMainDomain = currentDomain === superAdminDomain
           isSuperAdminDomain = isMainDomain
-          console.log('Non-localhost super admin check:', isMainDomain)
+          console.log('Super Admin Domain Check:', {
+            currentDomain,
+            superAdminDomain,
+            envVariable: process.env.NEXT_PUBLIC_SUPER_ADMIN_DOMAIN,
+            isMainDomain
+          })
         }
         
         setIsSuperAdmin(isSuperAdminDomain)

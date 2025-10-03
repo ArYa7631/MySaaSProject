@@ -173,9 +173,6 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
                 <Link href="/admin">
                   <Button variant="outline">Admin Dashboard</Button>
                 </Link>
-                <Link href="/landing">
-                  <Button variant="ghost">View Site</Button>
-                </Link>
                 {/* Always show Create Marketplace button for super admin communities */}
                 {isSuperAdmin && (
                   <Link href="/register">

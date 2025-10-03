@@ -9,7 +9,10 @@ Aws.config.update({
 })
 
 # S3 client instance
-S3_CLIENT = Aws::S3::Client.new
+# Use path-style URLs to support bucket names with dots (for SSL compatibility)
+S3_CLIENT = Aws::S3::Client.new(
+  force_path_style: true
+)
 
 # S3 bucket name
 S3_BUCKET = ENV['S3_BUCKET'] || 'aryasoftwaretech.test.bucket'

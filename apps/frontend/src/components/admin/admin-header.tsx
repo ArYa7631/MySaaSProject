@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Bell, Settings, LogOut, User, Globe } from 'lucide-react'
+import { Bell, Settings, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 
 export const AdminHeader = () => {
@@ -82,12 +82,6 @@ export const AdminHeader = () => {
                 <Link href="/admin/profile" className="flex items-center">
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/landing" className="flex items-center">
-                  <Globe className="mr-2 h-4 w-4" />
-                  <span>View Site</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />

@@ -10,7 +10,6 @@ import {
   Settings, 
   FileText, 
   BarChart3, 
-  Eye,
   Edit,
   Plus
 } from 'lucide-react'
@@ -70,13 +69,6 @@ export default function AdminDashboard() {
       href: '/admin/settings',
       icon: Settings,
       color: 'bg-green-500',
-    },
-    {
-      title: 'View Site',
-      description: 'Preview your landing page',
-      href: '/landing',
-      icon: Eye,
-      color: 'bg-purple-500',
     },
     {
       title: 'Analytics',
