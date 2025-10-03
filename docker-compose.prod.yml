@@ -7,13 +7,14 @@ services:
       context: .
       dockerfile: apps/frontend/Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=https://aryasoftwaretech.com/api/v1
-        - NEXT_PUBLIC_APP_URL=https://aryasoftwaretech.com
+        # Use relative URLs for multi-tenant setup (supports any domain)
+        - NEXT_PUBLIC_API_URL=/api/v1
+        - NEXT_PUBLIC_APP_URL=
     environment:
       - NODE_ENV=production
       # Use relative URLs for multi-tenant setup (supports multiple domains)
-      - NEXT_PUBLIC_API_URL=https://aryasoftwaretech.com/api/v1
-      - NEXT_PUBLIC_APP_URL=https://aryasoftwaretech.com
+      - NEXT_PUBLIC_API_URL=/api/v1
+      - NEXT_PUBLIC_APP_URL=
     networks:
       - mysaasproject-network
     restart: unless-stopped
@@ -134,17 +135,18 @@ services:
       timeout: 10s
       retries: 3
 
-  # Certbot for SSL certificates
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./nginx/ssl:/etc/letsencrypt
-      - ./nginx/webroot:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email ${SSL_EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
-    depends_on:
-      - nginx
-    networks:
-      - mysaasproject-network
+  # Certbot for SSL certificates (disabled - using manual script per domain)
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./nginx/ssl:/etc/letsencrypt
+  #     - ./nginx/webroot:/var/www/html
+  #   command: certonly --webroot --webroot-path=/var/www/html --email ${SSL_EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
+  #   depends_on:
+  #     - nginx
+  #   networks:
+  #     - mysaasproject-network
+  # Note: Use ./scripts/add-domain-ssl.sh to add SSL for each domain
 
 volumes:
   postgres_data:

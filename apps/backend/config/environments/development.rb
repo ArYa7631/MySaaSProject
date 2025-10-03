@@ -46,8 +46,8 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
   
-  # Allow requests from test domains
-  config.hosts << "www.aryasoftwaretech.com"
+  # Allow requests from any domain for multi-tenant testing
+  config.hosts.clear  # Remove all host restrictions in development
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
