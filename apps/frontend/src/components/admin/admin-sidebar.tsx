@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/contexts/auth-context'
+import { useCommunityContext } from '@/hooks/use-community-context'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/utils/cn'
@@ -9,12 +10,11 @@ import {
   Settings, 
   FileText, 
   Users, 
-  Globe,
-  Palette,
   BarChart3,
   Image,
   Navigation,
-  MessageSquare
+  MessageSquare,
+  Globe
 } from 'lucide-react'
 
 const navigation = [
@@ -68,19 +68,30 @@ const navigation = [
 export const AdminSidebar = () => {
   const pathname = usePathname()
   const { community } = useAuth()
+  const { community: communityContext } = useCommunityContext()
+  
+  // Get logo and community name
+  const logo = (communityContext as any)?.marketplace_configuration?.logo
+  const communityName = communityContext?.ident || community?.ident || 'Admin'
 
   return (
     <div className="w-64 bg-white shadow-lg">
       <div className="flex flex-col h-full">
-        {/* Logo/Brand */}
-        <div className="flex items-center justify-center h-16 px-4 border-b">
-          <div className="flex items-center space-x-2">
-            <Globe className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-gray-900">
-              {community?.ident || 'Admin'}
-            </span>
-          </div>
-        </div>
+        {/* Logo/Brand - Left Aligned */}
+        <Link href="/" className="flex items-center space-x-3 px-6 py-3 border-b hover:bg-gray-50 transition-colors">
+          {logo ? (
+            <img 
+              src={logo} 
+              alt={communityName}
+              className="h-10 w-10 rounded object-cover flex-shrink-0"
+            />
+          ) : (
+            <Globe className="h-10 w-10 text-primary flex-shrink-0" />
+          )}
+          <span className="text-lg font-bold text-gray-900 truncate">
+            {communityName}
+          </span>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2">

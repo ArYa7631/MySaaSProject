@@ -35,11 +35,6 @@ export default function LandingPageEditor() {
   const [showPreview, setShowPreview] = useState(false)
   const [editingSection, setEditingSection] = useState<LandingPageSection | null>(null)
 
-  // Debug: Log sections data
-  useEffect(() => {
-    console.log('Current sections:', sections)
-  }, [sections])
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -58,9 +53,6 @@ export default function LandingPageEditor() {
   }
 
   const handleAddSection = () => {
-    console.log('Adding section - Community ID:', community?.id)
-    console.log('User data:', user)
-    console.log('Community data:', community)
     setEditingSection(null)
     setShowSectionBuilder(true)
   }
@@ -81,15 +73,10 @@ export default function LandingPageEditor() {
   }
 
   const handleSaveSection = async (section: LandingPageSection) => {
-    console.log('Saving section:', section)
-    console.log('Community ID:', community?.id)
-    console.log('User ID:', user?.id)
     try {
       if (editingSection) {
-        console.log('Updating existing section:', editingSection.id)
         await updateSection(editingSection.id, section)
       } else {
-        console.log('Adding new section')
         await addSection(section)
       }
       setShowSectionBuilder(false)
@@ -112,86 +99,6 @@ export default function LandingPageEditor() {
     } catch (error) {
       console.error('Error adding template section:', error)
       alert('Failed to add template section. Please try again.')
-    }
-  }
-
-  // Add test section for debugging
-  const handleAddTestSection = async () => {
-    const testSection: LandingPageSection = {
-      id: `test-section-${Date.now()}`,
-      name: 'Test Hero Section',
-      description: 'A test hero section for debugging',
-      type: 'HeroSection',
-      content: {
-        title: 'Welcome to Our Platform',
-        subtitle: 'The best solution for your needs',
-        description: 'This is a test section to verify the integration is working properly.',
-        primaryButton: {
-          text: 'Get Started',
-          url: '/signup'
-        },
-        secondaryButton: {
-          text: 'Learn More',
-          url: '/about'
-        }
-      }
-    }
-    
-    try {
-      await addSection(testSection)
-      console.log('Test section added successfully')
-    } catch (error) {
-      console.error('Error adding test section:', error)
-      alert('Failed to add test section')
-    }
-  }
-
-  // Add multiple test sections for reordering
-  const handleAddMultipleTestSections = async () => {
-    const testSections: LandingPageSection[] = [
-      {
-        id: `test-section-1-${Date.now()}`,
-        name: 'First Section',
-        description: 'This is the first section',
-        type: 'Jumbotron',
-        content: {
-          title: 'First Section Title',
-          description: 'First section description',
-          primaryButton: { text: 'Button 1', url: '/first' }
-        }
-      },
-      {
-        id: `test-section-2-${Date.now()}`,
-        name: 'Second Section',
-        description: 'This is the second section',
-        type: 'Features',
-        content: {
-          title: 'Second Section Title',
-          description: 'Second section description',
-          primaryButton: { text: 'Button 2', url: '/second' }
-        }
-      },
-      {
-        id: `test-section-3-${Date.now()}`,
-        name: 'Third Section',
-        description: 'This is the third section',
-        type: 'Gallery',
-        content: {
-          title: 'Third Section Title',
-          description: 'Third section description',
-          primaryButton: { text: 'Button 3', url: '/third' }
-        }
-      }
-    ]
-    
-    try {
-      for (const section of testSections) {
-        await addSection(section)
-      }
-      console.log('Multiple test sections added successfully')
-    } catch (error) {
-      console.error('Error adding test sections:', error)
-      alert('Failed to add test sections')
     }
   }
 
@@ -222,29 +129,8 @@ export default function LandingPageEditor() {
             <Plus className="h-4 w-4 mr-2" />
             Add Section
           </Button>
-          <Button variant="outline" onClick={handleAddTestSection}>
-            Add Test Section
-          </Button>
-          <Button variant="outline" onClick={handleAddMultipleTestSections}>
-            Add 3 Test Sections
-          </Button>
         </div>
       </div>
-
-      {/* Debug Info */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="text-blue-800">Debug Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-sm text-blue-700">
-            <p><strong>Community ID:</strong> {community?.id}</p>
-            <p><strong>Sections Count:</strong> {sections?.length || 0}</p>
-            <p><strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}</p>
-            <p><strong>Error:</strong> {isError ? 'Yes' : 'No'}</p>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Sections List */}
       {sections && sections.length > 0 ? (
@@ -284,9 +170,6 @@ export default function LandingPageEditor() {
                 <Button onClick={handleAddSection}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add First Section
-                </Button>
-                <Button variant="outline" onClick={handleAddTestSection}>
-                  Add Test Section
                 </Button>
               </div>
             </div>
