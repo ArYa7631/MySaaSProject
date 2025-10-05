@@ -1,4 +1,5 @@
 class Api::V1::RegistrationsController < ApplicationController
+  include DomainNormalization
   skip_before_action :authenticate_user_from_jwt!, only: [:create]
   respond_to :json
 
@@ -70,7 +71,7 @@ class Api::V1::RegistrationsController < ApplicationController
     domain = request.host
     
     # Find the community by domain
-    Community.find_by(domain: domain)
+    find_community_by_domain(domain)
   end
 
   def build_community_url(community)
@@ -82,7 +83,9 @@ class Api::V1::RegistrationsController < ApplicationController
     if community.domain == 'localhost'
       "#{protocol}://localhost#{port}"
     else
-      "#{protocol}://#{community.domain}#{port}"
+      # Always redirect to www version of the domain
+      domain_with_www = community.domain.start_with?('www.') ? community.domain : "www.#{community.domain}"
+      "#{protocol}://#{domain_with_www}#{port}"
     end
   end
 end

@@ -1,4 +1,5 @@
 class Api::V1::SessionsController < ApplicationController
+  include DomainNormalization
   skip_before_action :authenticate_user_from_jwt!, only: [:create]
   respond_to :json
 
@@ -79,7 +80,7 @@ class Api::V1::SessionsController < ApplicationController
     current_domain = request.host
     
     # Find the community for the current domain
-    current_community = Community.find_by(domain: current_domain)
+    current_community = find_community_by_domain(current_domain)
     
     # If no community found for this domain, allow login (might be localhost or unknown domain)
     return true unless current_community

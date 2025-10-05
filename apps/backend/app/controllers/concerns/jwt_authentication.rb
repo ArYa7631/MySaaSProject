@@ -1,5 +1,6 @@
 module JwtAuthentication
   extend ActiveSupport::Concern
+  include DomainNormalization
 
   included do
     before_action :authenticate_user_from_jwt!
@@ -71,7 +72,7 @@ module JwtAuthentication
     current_domain = request.host
     
     # Find the community for the current domain
-    current_community = Community.find_by(domain: current_domain)
+    current_community = find_community_by_domain(current_domain)
     
     # If no community found for this domain, allow access (might be localhost or unknown domain)
     return unless current_community

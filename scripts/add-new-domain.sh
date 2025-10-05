@@ -64,13 +64,13 @@ cp -r /etc/letsencrypt/* nginx/ssl/
 chmod -R 755 nginx/ssl/
 echo -e "${GREEN}✓ Certificates copied${NC}"
 
-# Step 4: Add server block to nginx config
+# Step 4: Add server block to nginx config (FIXED - adds inside http block)
 echo -e "\n${YELLOW}[4/5] Updating nginx configuration...${NC}"
 
 if grep -q "server_name ${DOMAIN}" $NGINX_CONF; then
     echo -e "${YELLOW}⚠ Domain already in config${NC}"
 else
-    # Add new server block before closing brace
+    # Add new server block BEFORE the closing } of http block
     sed -i "/^}$/i\\
 \\
     # ${DOMAIN}\\
@@ -101,7 +101,7 @@ else
             proxy_pass \$frontend;\\
             proxy_http_version 1.1;\\
             proxy_set_header Upgrade \$http_upgrade;\\
-            proxy_set_header Connection 'upgrade';\\
+            proxy_set_header Connection '\''upgrade'\'';\\
             proxy_set_header Host \$host;\\
             proxy_set_header X-Real-IP \$remote_addr;\\
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\\
@@ -115,7 +115,7 @@ else
             proxy_pass \$backend;\\
             proxy_http_version 1.1;\\
             proxy_set_header Upgrade \$http_upgrade;\\
-            proxy_set_header Connection 'upgrade';\\
+            proxy_set_header Connection '\''upgrade'\'';\\
             proxy_set_header Host \$host;\\
             proxy_set_header X-Real-IP \$remote_addr;\\
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\\
@@ -125,7 +125,7 @@ else
             proxy_connect_timeout 30s;\\
             proxy_send_timeout 30s;\\
         }\\
-    }
+    }\\
 " $NGINX_CONF
     
     echo -e "${GREEN}✓ Nginx config updated${NC}"

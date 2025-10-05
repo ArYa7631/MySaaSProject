@@ -20,7 +20,7 @@ const registerSchema = z.object({
   password_confirmation: z.string(),
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
-  domain: z.string().min(1, 'Domain is required').regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*$/, 'Invalid domain format'),
+  domain: z.string().min(1, 'Domain is required').regex(/^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.[a-zA-Z]{2,}$/, 'Invalid domain format (e.g., sanskritikanchal.com)'),
 }).refine((data) => data.password === data.password_confirmation, {
   message: "Passwords don't match",
   path: ["password_confirmation"],
@@ -175,14 +175,14 @@ export default function RegisterPage() {
               <Input
                 id="domain"
                 type="text"
-                placeholder="your-domain-name"
+                placeholder="sanskritikanchal.com"
                 {...register('domain')}
               />
               {errors.domain && (
                 <p className="text-sm text-red-600">{errors.domain.message}</p>
               )}
               <p className="text-xs text-gray-500">
-                This will be your community's domain (e.g., your-domain-name)
+                Enter your full domain name (e.g., sanskritikanchal.com, mycompany.in)
               </p>
             </div>
 

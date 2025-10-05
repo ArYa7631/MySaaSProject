@@ -1,4 +1,5 @@
 class Api::V1::CommunitiesController < Api::V1::BaseController
+  include DomainNormalization
   before_action :set_community, only: [:show, :update, :destroy]
 
   # GET /api/v1/communities
@@ -19,7 +20,7 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     # Use query parameter to avoid Rails format interpretation
     domain = params[:domain]
     
-    @community = Community.find_by(domain: domain, is_enabled: true)
+    @community = find_community_by_domain(domain)
     
     unless @community
       render json: ApplicationSerializer.error("Community not found for domain: #{domain}", {}, "not_found"), status: :not_found
@@ -88,4 +89,5 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
       :locale, :currency, :country, :ip_address, :person_id
     )
   end
+
 end
