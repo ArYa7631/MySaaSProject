@@ -100,14 +100,29 @@ export class CommunityService {
   static async updateCommunity(id: number, data: UpdateCommunityRequest): Promise<Community> {
     const formData = new FormData()
     
-    Object.entries(data).forEach(([key, value]) => {
+    // Map frontend field names to backend field names
+    const mappedData: any = {}
+    if (data.name !== undefined) {
+      mappedData.ident = data.name
+    }
+    if (data.description !== undefined) {
+      mappedData.description = data.description
+    }
+    if (data.logo !== undefined) {
+      mappedData.logo = data.logo
+    }
+    if (data.settings !== undefined) {
+      mappedData.settings = data.settings
+    }
+    
+    Object.entries(mappedData).forEach(([key, value]) => {
       if (value !== undefined) {
         if (value instanceof File) {
-          formData.append(key, value)
+          formData.append(`community[${key}]`, value)
         } else if (typeof value === 'object') {
-          formData.append(key, JSON.stringify(value))
+          formData.append(`community[${key}]`, JSON.stringify(value))
         } else {
-          formData.append(key, String(value))
+          formData.append(`community[${key}]`, String(value))
         }
       }
     })

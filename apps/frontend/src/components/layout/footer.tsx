@@ -3,7 +3,7 @@
 import { useCommunityContext } from '@/hooks/use-community-context'
 import { MarketplaceConfiguration } from '@mysaasproject/shared'
 import Link from 'next/link'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Facebook, Instagram, Twitter, Github, MessageCircle } from 'lucide-react'
 
 interface FooterProps {
   config?: MarketplaceConfiguration | null
@@ -268,6 +268,98 @@ export const Footer: React.FC<FooterProps> = ({ config }) => {
             </>
           )}
         </div>
+
+        {/* Social Media Icons */}
+        {config && (
+          <div className="mt-8 pt-8 border-t" style={{ borderColor: community?.footer?.text_color || '#374151' }}>
+            <div className="flex justify-center space-x-4">
+              {/* WhatsApp Icon */}
+              {config.whatsapp_number && config.enable_whatsapp_bot && (
+                <a
+                  href={`https://wa.me/${config.whatsapp_number.replace(/[^\d]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                  style={{ 
+                    backgroundColor: '#25D366',
+                    color: '#ffffff'
+                  }}
+                  title="Chat with us on WhatsApp"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </a>
+              )}
+              
+              {/* Facebook Icon */}
+              {config.facebook_url && (
+                <a
+                  href={config.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                  style={{ 
+                    backgroundColor: '#1877F2',
+                    color: '#ffffff'
+                  }}
+                  title="Follow us on Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              
+              {/* Instagram Icon */}
+              {config.instagram_url && (
+                <a
+                  href={config.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                  style={{ 
+                    backgroundColor: '#E4405F',
+                    color: '#ffffff'
+                  }}
+                  title="Follow us on Instagram"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              
+              {/* Twitter Icon */}
+              {config.twitter_url && (
+                <a
+                  href={config.twitter_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                  style={{ 
+                    backgroundColor: '#1DA1F2',
+                    color: '#ffffff'
+                  }}
+                  title="Follow us on Twitter"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              
+              {/* GitHub Icon */}
+              {config.github_url && (
+                <a
+                  href={config.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                  style={{ 
+                    backgroundColor: '#333333',
+                    color: '#ffffff'
+                  }}
+                  title="View our GitHub"
+                >
+                  <Github className="h-5 w-5" />
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         <div 
           className="border-t mt-8 pt-8 text-center"

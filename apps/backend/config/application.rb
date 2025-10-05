@@ -45,18 +45,7 @@ module MySaaSProject
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use ActionDispatch::Cookies
 
-    # CORS configuration - Allow all domains for multi-tenant setup
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        # Allow all origins for multi-domain support
-        # In production, all domains are routed through nginx
-        origins '*'
-        resource '*',
-          headers: :any,
-          methods: [:get, :post, :put, :patch, :delete, :options, :head],
-          credentials: false  # Must be false when origins is '*'
-      end
-    end
+    # CORS configuration is handled in config/initializers/rack_cors.rb
   end
 end
 

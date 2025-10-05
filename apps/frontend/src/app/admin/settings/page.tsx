@@ -12,13 +12,14 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
-import { Save, Globe, Palette, Image, Bell, Shield, Languages } from 'lucide-react'
+import { Save, Globe, Palette, Image, Bell, Languages } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { LandingPageService } from '@/services/landing-page.service'
 import { ImageUpload } from '@/components/ui/image-upload'
 import { ImageUploadResponse } from '@/services/image.service'
 import { ColorPicker } from '@/components/ui/color-picker'
 import { NavigationService } from '@/services/navigation.service'
+import { CommunityService } from '@/services/community.service'
 
 // Currency and Locale options
 const CURRENCIES = [
@@ -402,6 +403,8 @@ export default function SettingsPage() {
   const { toast } = useToast()
 
   const [formData, setFormData] = useState({
+    // Basic information
+    communityName: '',
     // Basic branding
     title: '',
     logo: '',
@@ -444,16 +447,15 @@ export default function SettingsPage() {
     notification: '',
     cookie_text: '',
     
-    // Admin settings
-    is_enabled: true,
-    is_super_admin: false,
   })
 
   // Update form data when config loads
   useEffect(() => {
     if (config) {
       const configAny = config as any // Temporary type assertion until shared types are updated
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
+        communityName: community?.ident || '',
         title: config.title || '',
         logo: config.logo || '',
         profile_logo: configAny.profile_logo || '',
@@ -474,9 +476,7 @@ export default function SettingsPage() {
         copyright: configAny.copyright || '',
         notification: configAny.notification || '',
         cookie_text: configAny.cookie_text || '',
-        is_enabled: config.is_enabled !== undefined ? config.is_enabled : true,
-        is_super_admin: configAny.is_super_admin || false,
-      })
+      }))
     }
   }, [config])
 
@@ -644,6 +644,13 @@ export default function SettingsPage() {
         return
       }
       
+      // Update community name if changed
+      if (formData.communityName !== community?.ident) {
+        await CommunityService.updateCommunity(communityId, {
+          name: formData.communityName,
+        })
+      }
+      
       // Save marketplace configuration
       const result = await LandingPageService.updateMarketplaceConfiguration(communityId, {
         title: formData.title,
@@ -666,8 +673,6 @@ export default function SettingsPage() {
         copyright: formData.copyright,
         notification: formData.notification,
         cookie_text: formData.cookie_text,
-        is_enabled: formData.is_enabled,
-        is_super_admin: formData.is_super_admin,
       } as any) // Temporary type assertion until shared types are updated
 
       // Save topbar colors
@@ -757,11 +762,12 @@ export default function SettingsPage() {
               <Label htmlFor="community-name">Community Name</Label>
               <Input
                 id="community-name"
-                value={community?.ident || ''}
-                disabled
+                value={formData.communityName}
+                onChange={(e) => handleInputChange('communityName', e.target.value)}
+                placeholder="Enter community name"
                 className="mt-1"
               />
-              <p className="text-sm text-gray-500 mt-1">Community name cannot be changed</p>
+              <p className="text-sm text-gray-500 mt-1">This will be displayed as your community identifier</p>
             </div>
             <div>
               <Label htmlFor="domain">Domain</Label>
@@ -1313,41 +1319,6 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Admin Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Shield className="h-5 w-5 mr-2" />
-            Admin Settings
-          </CardTitle>
-          <CardDescription>Manage community status and admin privileges</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="enabled">Community Status</Label>
-              <p className="text-sm text-gray-600">Enable or disable the community</p>
-            </div>
-            <Switch
-              id="enabled"
-              checked={formData.is_enabled}
-              onCheckedChange={(checked) => handleInputChange('is_enabled', checked)}
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="super-admin">Super Admin</Label>
-              <p className="text-sm text-gray-600">Grant super admin privileges</p>
-            </div>
-            <Switch
-              id="super-admin"
-              checked={formData.is_super_admin}
-              onCheckedChange={(checked) => handleInputChange('is_super_admin', checked)}
-            />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Preview */}
       <Card>

@@ -133,6 +133,7 @@ const errorInterceptor = (error: AxiosError) => {
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: API_TIMEOUT,
+  withCredentials: true,  // Include credentials for CORS
   headers: {
     'Content-Type': 'application/json',
   },

@@ -3,6 +3,7 @@
 import { RenderSections } from '@/components/sections/render-sections'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
+import { WhatsAppButton } from '@/components/ui/whatsapp-button'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { LandingPageSkeleton } from '@/components/ui/loading-skeleton'
 import { useLandingPageState } from '@/hooks/use-landing-page-state'
@@ -37,6 +38,7 @@ export const LandingPageContent: React.FC = () => {
           <RenderSections sections={Array.isArray(sections) ? sections : []} marketplaceConfig={marketplaceConfig} />
         </main>
         <Footer config={marketplaceConfig} />
+        <WhatsAppButton config={marketplaceConfig} />
       </div>
     </ErrorBoundary>
   )
