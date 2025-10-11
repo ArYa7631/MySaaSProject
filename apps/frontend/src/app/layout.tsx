@@ -6,6 +6,7 @@ import { QueryProvider } from '@/providers/query-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { DomainRedirect } from '@/components/domain-redirect'
 import { DynamicTitle } from '@/components/dynamic-title'
+import { GlobalWhatsAppButton } from '@/components/ui/global-whatsapp-button'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,6 +28,7 @@ export default function RootLayout({
             <DomainRedirect>
               {children}
             </DomainRedirect>
+            <GlobalWhatsAppButton />
             <Toaster />
           </AuthProvider>
         </QueryProvider>
