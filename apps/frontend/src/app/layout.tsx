@@ -5,11 +5,11 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { QueryProvider } from '@/providers/query-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { DomainRedirect } from '@/components/domain-redirect'
+import { DynamicTitle } from '@/components/dynamic-title'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MySaaSProject',
   description: 'A modern SaaS application built with Rails and Next.js',
 }
 
@@ -23,6 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <QueryProvider>
           <AuthProvider>
+            <DynamicTitle />
             <DomainRedirect>
               {children}
             </DomainRedirect>
