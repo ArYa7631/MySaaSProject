@@ -132,20 +132,6 @@ export default function DynamicContentPage() {
       <div className="min-h-screen">
         <Navbar config={marketplaceConfig} />
         <main>
-          {/* Page Header */}
-          <div className="bg-gray-50 py-8">
-            <div className="max-w-4xl mx-auto px-4 text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                {contentPage.title}
-              </h1>
-              {contentPage.meta_data?.description && (
-                <p className="text-lg text-gray-600">
-                  {contentPage.meta_data.description}
-                </p>
-              )}
-            </div>
-          </div>
-
           {/* Page Sections */}
           <RenderSections 
             sections={Array.isArray(sections) ? sections : []} 
