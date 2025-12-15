@@ -3,7 +3,6 @@ class Api::V1::ContentPagesController < Api::V1::BaseController
   before_action :require_community_access
   before_action :set_content_page, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities/:community_id/content_pages
   def index
     content_pages = current_community.content_pages.order(:created_at)
     content_pages = content_pages.active if params[:active_only] == 'true'
@@ -13,12 +12,10 @@ class Api::V1::ContentPagesController < Api::V1::BaseController
     render_success(content_pages, ContentPageSerializer)
   end
 
-  # GET /api/v1/communities/:community_id/content_pages/:id
   def show
     render_success(@content_page, ContentPageSerializer)
   end
 
-  # POST /api/v1/communities/:community_id/content_pages
   def create
     @content_page = current_community.content_pages.build(content_page_params)
     
@@ -29,7 +26,6 @@ class Api::V1::ContentPagesController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:community_id/content_pages/:id
   def update
     if @content_page.update(content_page_params)
       render_success(@content_page, ContentPageSerializer)
@@ -38,7 +34,6 @@ class Api::V1::ContentPagesController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/content_pages/:id
   def destroy
     if @content_page.destroy
       render json: { status: "success", message: "Content page deleted successfully" }, status: :ok

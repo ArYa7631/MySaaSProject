@@ -5,7 +5,6 @@ class Api::V1::MarketplaceConfigurationsController < Api::V1::BaseController
   before_action :require_community_access
   before_action :set_marketplace_configuration, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities/:community_id/marketplace_configuration
   def show
     if @marketplace_configuration
       render_success(@marketplace_configuration, MarketplaceConfigurationSerializer)
@@ -14,7 +13,6 @@ class Api::V1::MarketplaceConfigurationsController < Api::V1::BaseController
     end
   end
 
-  # POST /api/v1/communities/:community_id/marketplace_configuration
   def create
     @marketplace_configuration = current_community.build_marketplace_configuration(marketplace_configuration_params)
     
@@ -25,7 +23,6 @@ class Api::V1::MarketplaceConfigurationsController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:community_id/marketplace_configuration
   def update
     if @marketplace_configuration.update(marketplace_configuration_params)
       render_success(@marketplace_configuration, MarketplaceConfigurationSerializer)
@@ -34,7 +31,6 @@ class Api::V1::MarketplaceConfigurationsController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/marketplace_configuration
   def destroy
     if @marketplace_configuration.destroy
       render json: { status: "success", message: "Marketplace configuration deleted successfully" }, status: :ok

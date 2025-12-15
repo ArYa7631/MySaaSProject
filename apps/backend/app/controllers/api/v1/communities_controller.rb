@@ -1,12 +1,10 @@
 class Api::V1::CommunitiesController < Api::V1::BaseController
   before_action :set_community, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities
   def index
     communities = Community.all.order(:created_at)
     communities = paginate(communities) if params[:page]
     
-    # Optional includes
     options = {}
     options[:include_stats] = true if params[:include_stats] == 'true'
     options[:include_marketplace_configuration] = true if params[:include_marketplace_configuration] == 'true'
@@ -14,9 +12,7 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     render_success(communities, CommunitySerializer, options)
   end
 
-  # GET /api/v1/communities/by-domain?domain=example.com
   def by_domain
-    # Use query parameter to avoid Rails format interpretation
     domain = params[:domain]
     
     @community = Community.find_by(domain: domain, is_enabled: true)
@@ -35,7 +31,6 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     render_success(@community, CommunitySerializer, options)
   end
 
-  # GET /api/v1/communities/:id
   def show
     options = {}
     options[:include_stats] = true if params[:include_stats] == 'true'
@@ -47,7 +42,6 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     render_success(@community, CommunitySerializer, options)
   end
 
-  # POST /api/v1/communities
   def create
     @community = Community.new(community_params)
     
@@ -58,7 +52,6 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:id
   def update
     if @community.update(community_params)
       render_success(@community, CommunitySerializer)
@@ -67,7 +60,6 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:id
   def destroy
     if @community.destroy
       render json: { status: "success", message: "Community deleted successfully" }, status: :ok

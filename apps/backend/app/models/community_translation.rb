@@ -1,17 +1,14 @@
 class CommunityTranslation < ApplicationRecord
   belongs_to :community
 
-  # Validations
   validates :locale, presence: true, length: { maximum: 10 }
   validates :translation, presence: true
   validates :translation_key, presence: true
   validates :translation_key, uniqueness: { scope: [:community_id, :locale] }
 
-  # Scopes
   scope :by_locale, ->(locale) { where(locale: locale) }
   scope :by_key, ->(key) { where(translation_key: key) }
 
-  # Instance methods
   def localized_key
     "#{locale}.#{translation_key}"
   end

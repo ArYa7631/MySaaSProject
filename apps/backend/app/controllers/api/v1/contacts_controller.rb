@@ -6,7 +6,6 @@ class Api::V1::ContactsController < Api::V1::BaseController
   before_action :require_community_access, except: [:create]
   before_action :set_contact, only: [:show, :destroy]
 
-  # GET /api/v1/communities/:community_id/contacts
   def index
     contacts = current_community.contacts.order(:created_at)
     contacts = contacts.by_email(params[:email]) if params[:email]
@@ -16,14 +15,11 @@ class Api::V1::ContactsController < Api::V1::BaseController
     render_success(contacts, ContactSerializer)
   end
 
-  # GET /api/v1/communities/:community_id/contacts/:id
   def show
     render_success(@contact, ContactSerializer)
   end
 
-  # POST /api/v1/communities/:community_id/contacts
   def create
-    # For public contact form, we need to find the community from the URL params
     community = Community.find(params[:community_id])
     @contact = community.contacts.build(contact_params)
     
@@ -34,7 +30,6 @@ class Api::V1::ContactsController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/contacts/:id
   def destroy
     if @contact.destroy
       render json: { status: "success", message: "Contact deleted successfully" }, status: :ok

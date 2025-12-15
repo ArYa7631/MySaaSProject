@@ -3,7 +3,6 @@ class Api::V1::CommunityTranslationsController < Api::V1::BaseController
   before_action :require_community_access
   before_action :set_translation, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities/:community_id/translations
   def index
     translations = current_community.community_translations.order(:created_at)
     translations = translations.by_locale(params[:locale]) if params[:locale]
@@ -13,12 +12,10 @@ class Api::V1::CommunityTranslationsController < Api::V1::BaseController
     render_success(translations, CommunityTranslationSerializer)
   end
 
-  # GET /api/v1/communities/:community_id/translations/:id
   def show
     render_success(@translation, CommunityTranslationSerializer)
   end
 
-  # POST /api/v1/communities/:community_id/translations
   def create
     @translation = current_community.community_translations.build(translation_params)
     
@@ -29,7 +26,6 @@ class Api::V1::CommunityTranslationsController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:community_id/translations/:id
   def update
     if @translation.update(translation_params)
       render_success(@translation, CommunityTranslationSerializer)
@@ -38,7 +34,6 @@ class Api::V1::CommunityTranslationsController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/translations/:id
   def destroy
     if @translation.destroy
       render json: { status: "success", message: "Translation deleted successfully" }, status: :ok

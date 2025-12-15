@@ -4,7 +4,6 @@ class Api::V1::BaseController < ApplicationController
   # Skip authentication for public endpoints
   skip_before_action :authenticate_user_from_jwt!, only: [:index, :show, :by_domain, :create]
 
-  # Error handling
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
@@ -26,14 +25,12 @@ class Api::V1::BaseController < ApplicationController
   def require_community_access
     return true unless current_community && current_user
     
-    # If user has no community assigned, deny access
     if current_user.community_id.nil?
       Rails.logger.warn "User #{current_user.id} (#{current_user.email}) has no community assigned but attempted to access community #{current_community.id}"
       render json: ApplicationSerializer.error("Access denied: User is not assigned to any community", {}, "access_denied"), status: :forbidden
       return false
     end
     
-    # Check if the user belongs to the requested community
     unless current_user.community_id == current_community.id
       Rails.logger.warn "User #{current_user.id} (#{current_user.email}) attempted to access community #{current_community.id} but belongs to community #{current_user.community_id}"
       render json: ApplicationSerializer.error("Access denied: User does not belong to this community", {}, "access_denied"), status: :forbidden
@@ -85,10 +82,9 @@ class Api::V1::BaseController < ApplicationController
     ), status: :bad_request
   end
 
-  # Pagination helpers
   def paginate(relation)
     page = params[:page] || 1
-    per_page = [params[:per_page]&.to_i || 20, 100].min # Max 100 per page
+    per_page = [params[:per_page]&.to_i || 20, 100].min 
     relation.page(page).per(per_page)
   end
 

@@ -1,19 +1,15 @@
 class Footer < ApplicationRecord
   belongs_to :community
 
-  # Validations - allow empty arrays but ensure sections exist
   validates :sections, presence: true, allow_blank: true
 
-  # Color validations
   validates :background_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
   validates :text_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
   validates :link_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
   validates :hover_color, format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z|\Alinear-gradient\(.*\)\z|\A[a-zA-Z]+\z/, message: "must be a valid color (hex, gradient, or CSS color name)" }, allow_blank: true
 
-  # Default values (using jsonb to match migrations)
   attribute :sections, :jsonb, default: []
 
-  # Instance methods
   def section_links
     sections || []
   end
@@ -27,7 +23,6 @@ class Footer < ApplicationRecord
         if section['links'].is_a?(Array)
           converted_section['links'] = section['links'].map.with_index do |link, index|
             if link.is_a?(Hash)
-              # Ensure all required fields are present
               link.merge(
                 'id' => link['id'] || "link-#{index}",
                 'order' => link['order'] || index
@@ -73,7 +68,6 @@ class Footer < ApplicationRecord
     self.sections = sections.reject { |section| section['label'] == label }
   end
 
-  # Legacy methods for backward compatibility
   def resource_links
     find_section('Resources')&.dig('links') || []
   end

@@ -3,7 +3,6 @@ class S3Service
     def upload_image(file, folder_path = nil)
       return { success: false, error: 'No file provided' } unless file
 
-      # Use local storage if AWS credentials are not configured or are placeholder values
       if ENV['S3_ACCESS_KEY_ID'].blank? || 
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||
@@ -15,12 +14,10 @@ class S3Service
       end
 
       begin
-        # Generate unique filename
         filename = generate_filename(file.original_filename)
         folder = folder_path || S3_IMAGE_FOLDER_PATH
         key = "#{folder}/#{filename}"
 
-        # Upload to S3
         response = S3_CLIENT.put_object(
           bucket: S3_BUCKET,
           key: key,
@@ -29,7 +26,6 @@ class S3Service
           acl: 'public-read'
         )
 
-        # Generate public URL
         url = "https://#{S3_BUCKET}.s3.#{ENV['S3_REGION']}.amazonaws.com/#{key}"
 
         {
@@ -51,20 +47,16 @@ class S3Service
 
     def upload_to_local_storage(file, folder_path = nil)
       begin
-        # Create uploads directory if it doesn't exist
         uploads_dir = Rails.root.join('public', 'uploads')
         FileUtils.mkdir_p(uploads_dir)
 
-        # Generate unique filename
         filename = generate_filename(file.original_filename)
         file_path = uploads_dir.join(filename)
 
-        # Save file to local storage
         File.open(file_path, 'wb') do |f|
           f.write(file.read)
         end
 
-        # Generate public URL
         base_url = ENV['BACKEND_URL'] || 'http://localhost:3001'
         url = "#{base_url}/uploads/#{filename}"
 
@@ -85,7 +77,6 @@ class S3Service
     def delete_image(key)
       return { success: false, error: 'No key provided' } unless key
 
-      # Use local storage if AWS credentials are not configured
       if ENV['S3_ACCESS_KEY_ID'].blank? || 
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||
@@ -113,7 +104,6 @@ class S3Service
     end
 
     def list_images(folder_path = nil)
-      # Use local storage if AWS credentials are not configured
       if ENV['S3_ACCESS_KEY_ID'].blank? || 
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key_id' ||
          ENV['S3_ACCESS_KEY_ID'] == 'your_aws_access_key' ||

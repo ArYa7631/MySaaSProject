@@ -42,7 +42,7 @@ export const useCommunityContext = (): UseCommunityContextReturn => {
 
   return {
     community,
-    isLoading,
+    isLoading: isLoading || currentDomain === null,
     isError,
     error: error as Error | null,
     refetch,

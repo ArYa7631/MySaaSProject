@@ -19,10 +19,8 @@ export class ApiClient {
         if (typeof window !== 'undefined') {
           const token = localStorage.getItem('authToken');
           if (token) {
-            config.headers = {
-              ...config.headers,
-              Authorization: `Bearer ${token}`,
-            };
+            config.headers = config.headers || {};
+            (config.headers as any).Authorization = `Bearer ${token}`;
           }
         }
         return config;

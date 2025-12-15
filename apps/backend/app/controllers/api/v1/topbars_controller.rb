@@ -3,7 +3,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
   before_action :require_community_access
   before_action :set_topbar, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities/:community_id/topbar
   def show
     if @topbar
       render_success(@topbar, TopbarSerializer)
@@ -12,7 +11,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
     end
   end
 
-  # POST /api/v1/communities/:community_id/topbar
   def create
     @topbar = current_community.build_topbar(topbar_params)
     
@@ -23,7 +21,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:community_id/topbar
   def update
     if @topbar
       if @topbar.update(topbar_params)
@@ -32,7 +29,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
         render_error("Failed to update topbar", @topbar.errors.as_json)
       end
     else
-      # Create topbar if it doesn't exist
       @topbar = current_community.build_topbar(topbar_params)
       if @topbar.save
         render_created(@topbar, TopbarSerializer)
@@ -42,7 +38,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/topbar
   def destroy
     if @topbar.destroy
       render json: { status: "success", message: "Topbar deleted successfully" }, status: :ok
@@ -58,7 +53,6 @@ class Api::V1::TopbarsController < Api::V1::BaseController
   end
 
   def topbar_params
-    # Allow nested parameters for navigation items and color fields
     params.require(:topbar).permit(
       :is_multilingual, 
       :profile,

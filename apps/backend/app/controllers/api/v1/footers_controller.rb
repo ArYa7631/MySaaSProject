@@ -3,7 +3,6 @@ class Api::V1::FootersController < Api::V1::BaseController
   before_action :require_community_access
   before_action :set_footer, only: [:show, :update, :destroy]
 
-  # GET /api/v1/communities/:community_id/footer
   def show
     if @footer
       render_success(@footer, FooterSerializer)
@@ -12,7 +11,6 @@ class Api::V1::FootersController < Api::V1::BaseController
     end
   end
 
-  # POST /api/v1/communities/:community_id/footer
   def create
     @footer = current_community.build_footer(footer_params)
     
@@ -23,7 +21,6 @@ class Api::V1::FootersController < Api::V1::BaseController
     end
   end
 
-  # PATCH/PUT /api/v1/communities/:community_id/footer
   def update
     if @footer
       if @footer.update(footer_params)
@@ -32,7 +29,6 @@ class Api::V1::FootersController < Api::V1::BaseController
         render_error("Failed to update footer", @footer.errors.as_json)
       end
     else
-      # Create footer if it doesn't exist
       @footer = current_community.build_footer(footer_params)
       if @footer.save
         render_created(@footer, FooterSerializer)
@@ -42,7 +38,6 @@ class Api::V1::FootersController < Api::V1::BaseController
     end
   end
 
-  # DELETE /api/v1/communities/:community_id/footer
   def destroy
     if @footer.destroy
       render json: { status: "success", message: "Footer deleted successfully" }, status: :ok
@@ -58,7 +53,6 @@ class Api::V1::FootersController < Api::V1::BaseController
   end
 
   def footer_params
-    # Allow nested parameters for footer sections, links, and color fields
     params.require(:footer).permit(
       :background_color,
       :text_color,

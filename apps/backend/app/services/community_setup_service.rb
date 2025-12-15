@@ -1,13 +1,10 @@
 class CommunitySetupService
   def self.create_community_with_defaults(user, domain, community_name = nil)
-    # Generate unique identifiers
     uuid = SecureRandom.uuid
     person_id = SecureRandom.alphanumeric(5)
     
-    # Create community name from domain if not provided
     community_name ||= domain.humanize
     
-    # Create the community
     community = Community.create!(
       uuid: uuid,
       ident: community_name,
@@ -21,28 +18,20 @@ class CommunitySetupService
       person_id: person_id
     )
     
-    # Create marketplace configuration with defaults
     create_marketplace_configuration(community, community_name)
     
-    # Create beautiful landing page with defaults
     create_landing_page(community, community_name)
     
-    # Create navigation (topbar)
     create_topbar(community)
     
-    # Create footer
     create_footer(community)
     
-    # Create default content pages
     create_content_pages(community, community_name)
     
-    # Create sample contacts
     create_sample_contacts(community)
     
-    # Create translations
     create_translations(community, community_name)
     
-    # Associate user with community and set as admin
     user.update!(community: community, admin: true)
     
     community

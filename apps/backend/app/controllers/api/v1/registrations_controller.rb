@@ -4,7 +4,6 @@ class Api::V1::RegistrationsController < ApplicationController
 
   def create
     begin
-      # Check if the current community allows registration (super admin only)
       current_community = get_current_community
       if current_community && !current_community.marketplace_configuration&.is_super_admin
         return render json: {
@@ -18,7 +17,6 @@ class Api::V1::RegistrationsController < ApplicationController
       if user.save
         Rails.logger.info "User created successfully!"
         
-        # Create community with default data
         community = CommunitySetupService.create_community_with_defaults(
           user, 
           params[:user][:domain], 
@@ -66,19 +64,15 @@ class Api::V1::RegistrationsController < ApplicationController
   end
 
   def get_current_community
-    # Get the current domain from the request
     domain = request.host
     
-    # Find the community by domain
     Community.find_by(domain: domain)
   end
 
   def build_community_url(community)
-    # Determine the protocol and port based on environment
     protocol = Rails.env.production? ? 'https' : 'http'
     port = Rails.env.production? ? '' : ':3000'
     
-    # Build the URL for the new community
     if community.domain == 'localhost'
       "#{protocol}://localhost#{port}"
     else
