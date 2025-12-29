@@ -64,7 +64,7 @@ export default function ContentPageEditor() {
     setIsError(false)
     
     try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
+      const apiBaseUrl = '/api/v1'
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages/${params.id}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ export default function ContentPageEditor() {
     
     setIsSaving(true)
     try {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
+      const apiBaseUrl = '/api/v1'
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages/${contentPage.id}`, {
         method: 'PUT',
         headers: {

@@ -231,21 +231,6 @@ export default function LandingPageEditor() {
         </div>
       </div>
 
-      {/* Debug Info */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="text-blue-800">Debug Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-sm text-blue-700">
-            <p><strong>Community ID:</strong> {community?.id}</p>
-            <p><strong>Sections Count:</strong> {sections?.length || 0}</p>
-            <p><strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}</p>
-            <p><strong>Error:</strong> {isError ? 'Yes' : 'No'}</p>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Sections List */}
       {sections && sections.length > 0 ? (
         <div className="space-y-4">

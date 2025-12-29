@@ -48,7 +48,7 @@ export interface UpdateContentPageData {
 export class ContentPageService {
   private static getApiBaseUrl() {
     // NEXT_PUBLIC_API_URL already includes /api/v1
-    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'
+    return '/api/v1'
   }
 
   private static getAuthHeaders() {
