@@ -1,0 +1,16 @@
+{
+  "name": "MySaaSProject (Rails Dev)",
+  "dockerComposeFile": ["../docker-compose.dev.yml"],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "shopify.ruby-lsp",
+        "rebornix.Ruby",
+        "castwide.solargraph"
+      ]
+    }
+  }
+}

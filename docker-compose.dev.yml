@@ -1,73 +1,75 @@
-version: '3.8'
+version: "3.8"
+
+networks:
+  mysaasproject-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
 
 services:
-  # Frontend Application
   frontend:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile.dev
+    working_dir: /app/apps/frontend
+    command: yarn dev
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
-      - NEXT_PUBLIC_APP_URL=http://localhost:3000
-    depends_on:
-      - backend
-    networks:
-      - mysaasproject-network
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
     volumes:
       - ./apps/frontend:/app/apps/frontend
       - /app/apps/frontend/node_modules
       - /app/apps/frontend/.next
-    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - mysaasproject-network
 
-  # Backend API
   backend:
     build:
       context: ./apps/backend
       dockerfile: Dockerfile
+    working_dir: /app
+    command: sleep infinity
     ports:
       - "3001:3001"
     environment:
-      - RAILS_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mysaasproject_development
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
-      - S3_BUCKET=${S3_BUCKET}
-      - S3_REGION=${S3_REGION}
-      - S3_IMAGE_FOLDER_PATH=images
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/mysaasproject_development
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    volumes:
+      - .:/app
+      - /app/apps/frontend/node_modules
+      - /app/apps/frontend/.next
+      - /app/tmp
+      - /app/log
+      - ./apps/backend/public/uploads:/app/apps/backend/public/uploads
     depends_on:
       - postgres
       - redis
     networks:
       - mysaasproject-network
-    volumes:
-      - ./apps/backend:/app
-      - /app/tmp
-      - /app/log
-      - ./apps/backend/public/uploads:/app/public/uploads
-    restart: unless-stopped
 
-  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_DB=mysaasproject_development
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+      POSTGRES_DB: mysaasproject_development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
       - mysaasproject-network
-    restart: unless-stopped
 
-  # Redis Cache
   redis:
     image: redis:7-alpine
     ports:
@@ -76,12 +78,3 @@ services:
       - redis_data:/data
     networks:
       - mysaasproject-network
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
-  redis_data:
-
-networks:
-  mysaasproject-network:
-    driver: bridge

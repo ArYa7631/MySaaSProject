@@ -16,7 +16,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const API_BASE_URL = '/api/v1'
+const API_BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3001/api/v1'
+  : '/api/v1';
 const apiClient = createApiClient(API_BASE_URL)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -29,11 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const userData = localStorage.getItem('user')
       const communityData = localStorage.getItem('community')
       const token = localStorage.getItem('authToken')
-      
+
       if (userData && token) {
         const user = JSON.parse(userData)
         setUser(user)
-        
+
         // Fetch community data if user has community_id
         if (user.community_id && !communityData) {
           try {
@@ -71,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         '/auth/sign_in',
         { user: credentials }
       )
-      
+
       const { user, token } = response.data
       // Store user data and token in localStorage
       localStorage.setItem('user', JSON.stringify(user))
@@ -105,15 +107,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         '/auth/sign_up',
         { user: credentials }
       )
-      
+
       const { user, community, token, redirect_url } = response.data
-      
+
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('community', JSON.stringify(community))
       localStorage.setItem('authToken', token)
       setUser(user)
       setCommunity(community)
-      
+
       // Return redirect URL for the calling component to handle
       return { redirect_url }
     } catch (error: any) {

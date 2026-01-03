@@ -1,35 +1,54 @@
-# Use the official Node.js runtime as the base image
-FROM node:18-alpine
+# # Use the official Node.js runtime as the base image
+# FROM node:18-alpine
 
-# Set working directory
+# # Set working directory
+# WORKDIR /app
+
+# # Copy root package.json and yarn.lock for workspace setup
+# COPY package.json yarn.lock ./
+
+# # Copy the shared package
+# COPY packages/shared ./packages/shared
+
+# # Copy frontend package.json
+# COPY apps/frontend/package.json ./apps/frontend/
+
+# # Install dependencies at workspace level
+# RUN yarn install
+
+# # Copy the rest of the frontend application
+# # COPY apps/frontend ./apps/frontend
+
+# # Build the shared package
+# # RUN yarn workspace @mysaasproject/shared dev
+
+# # Set working directory to frontend
+# WORKDIR /app
+
+# # Add node_modules/.bin to PATH
+# ENV PATH /app/apps/frontend/node_modules/.bin:$PATH
+
+# # Expose port
+# EXPOSE 3000
+
+# # Start the development server
+# CMD ["yarn", "workspace", "@mysaasproject/frontend", "dev"]
+
+FROM node:18-bullseye
+
 WORKDIR /app
 
-# Copy root package.json and yarn.lock for workspace setup
+# Install git (VS Code + yarn need it)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 COPY package.json yarn.lock ./
-
-# Copy the shared package
 COPY packages/shared ./packages/shared
-
-# Copy frontend package.json
 COPY apps/frontend/package.json ./apps/frontend/
 
-# Install dependencies at workspace level
 RUN yarn install
 
-# Copy the rest of the frontend application
-COPY apps/frontend ./apps/frontend
+ENV PATH=/app/apps/frontend/node_modules/.bin:$PATH
 
-# Build the shared package
-RUN yarn workspace @mysaasproject/shared build
-
-# Set working directory to frontend
-WORKDIR /app/apps/frontend
-
-# Add node_modules/.bin to PATH
-ENV PATH /app/apps/frontend/node_modules/.bin:$PATH
-
-# Expose port
 EXPOSE 3000
 
-# Start the development server
-CMD ["yarn", "dev"]
+CMD ["yarn", "workspace", "@mysaasproject/frontend", "dev"]
