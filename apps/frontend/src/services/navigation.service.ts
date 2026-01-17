@@ -34,8 +34,9 @@ export interface FooterData {
 
 export class NavigationService {
   private static getApiBaseUrl() {
-    // NEXT_PUBLIC_API_URL already includes /api/v1
-    return '/api/v1'
+    return process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3001/api/v1'
+      : '/api/v1';
   }
 
   private static getAuthHeaders() {
@@ -171,7 +172,7 @@ export class NavigationService {
   static async updateTopbarNavigation(communityId: number, items: NavigationItem[]): Promise<TopbarData> {
     // First get existing topbar data
     const existingTopbar = await this.getTopbar(communityId)
-    
+
     const topbarData: TopbarData = {
       navigation: { items },
       profile: existingTopbar?.profile || {},
@@ -188,7 +189,7 @@ export class NavigationService {
   static async updateFooterSections(communityId: number, sections: FooterSection[]): Promise<FooterData> {
     // First get existing footer data
     const existingFooter = await this.getFooter(communityId)
-    
+
     const footerData: FooterData = {
       sections
     }
@@ -208,7 +209,7 @@ export class NavigationService {
   }): Promise<TopbarData> {
     // First get existing topbar data
     const existingTopbar = await this.getTopbar(communityId)
-    
+
     const topbarData: TopbarData = {
       navigation: existingTopbar?.navigation || { items: [] },
       profile: existingTopbar?.profile || {},
@@ -231,7 +232,7 @@ export class NavigationService {
   }): Promise<FooterData> {
     // First get existing footer data
     const existingFooter = await this.getFooter(communityId)
-    
+
     const footerData: FooterData = {
       sections: existingFooter?.sections || [],
       ...colors

@@ -95,8 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-3">
-            {/* Logo */}
+          <Link href={'/'} className="flex items-center space-x-3">
             {config?.logo && (
               <img 
                 src={config.logo} 
@@ -105,20 +104,17 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
               />
             )}
             
-            {/* Website Name */}
             <span 
               className="text-xl font-bold"
               style={{ color: (community as any)?.topbar?.text_color || config?.title_color || '#000' }}
             >
               {websiteName}
             </span>
-          </div>
+          </Link>
 
-          {/* Dynamic Navigation Items */}
           {navigationItems.length > 0 && (
             <div className="hidden md:flex items-center space-x-6">
               {navigationItems.map((item) => {
-                // Additional safety check
                 if (!item || !item.name || !item.url) {
                   return null
                 }
@@ -176,7 +172,6 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
                 <Link href="/landing">
                   <Button variant="ghost">View Site</Button>
                 </Link>
-                {/* Always show Create Marketplace button for super admin communities */}
                 {isSuperAdmin && (
                   <Link href="/register">
                     <Button>Create Marketplace</Button>
@@ -185,7 +180,6 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
               </div>
             ) : (
               <>
-                {/* Show Sign In and Create Marketplace buttons for super admin domains */}
                 {isSuperAdmin ? (
                   <div className="flex items-center space-x-4">
                     <Link href="/login">
@@ -196,7 +190,6 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
                     </Link>
                   </div>
                 ) : (
-                  /* Show login button for community domains when user is not authenticated */
                   <div className="flex items-center space-x-4">
                     <Link href="/login">
                       <Button 

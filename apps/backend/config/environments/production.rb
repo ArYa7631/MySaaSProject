@@ -99,6 +99,11 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/health" } }
+
+  # Allow only your SaaS domains
+  config.hosts << "www.sanskritikanchal.com"
+  config.hosts << "aryasoftwaretech.com"
+  config.hosts << "prashantkishor.in"
 end
 
 

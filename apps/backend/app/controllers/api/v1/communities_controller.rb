@@ -13,10 +13,19 @@ class Api::V1::CommunitiesController < Api::V1::BaseController
   end
 
   def by_domain
-    domain = params[:domain]
-    
-    @community = Community.find_by(domain: domain, is_enabled: true)
-    
+  raw_domain = params[:domain].to_s.downcase.strip
+
+  normalized_domain = raw_domain.sub(/\Awww\./, '')
+
+  @community = Community
+    .where(is_enabled: true)
+    .where(
+      "domain = :normalized OR domain = :www",
+      normalized: normalized_domain,
+      www: "www.#{normalized_domain}"
+    )
+    .first
+
     unless @community
       render json: ApplicationSerializer.error("Community not found for domain: #{domain}", {}, "not_found"), status: :not_found
       return

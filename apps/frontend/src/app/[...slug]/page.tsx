@@ -35,7 +35,6 @@ export default function DynamicContentPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
-  // Construct the endpoint from the slug
   const endpoint = params.slug ? `/${Array.isArray(params.slug) ? params.slug.join('/') : params.slug}` : '/'
 
   useEffect(() => {
@@ -78,18 +77,15 @@ export default function DynamicContentPage() {
     }
   }
 
-  // Set page metadata
   useEffect(() => {
     if (contentPage) {
       document.title = contentPage.meta_data?.title || contentPage.title
       
-      // Update meta description
       const metaDescription = document.querySelector('meta[name="description"]')
       if (metaDescription && contentPage.meta_data?.description) {
         metaDescription.setAttribute('content', contentPage.meta_data.description)
       }
       
-      // Update meta keywords
       const metaKeywords = document.querySelector('meta[name="keywords"]')
       if (metaKeywords && contentPage.meta_data?.keywords?.length) {
         metaKeywords.setAttribute('content', contentPage.meta_data.keywords.join(', '))
@@ -132,7 +128,6 @@ export default function DynamicContentPage() {
       <div className="min-h-screen">
         <Navbar config={marketplaceConfig} />
         <main>
-          {/* Page Header */}
           <div className="bg-gray-50 py-8">
             <div className="max-w-4xl mx-auto px-4 text-center">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -146,7 +141,6 @@ export default function DynamicContentPage() {
             </div>
           </div>
 
-          {/* Page Sections */}
           <RenderSections 
             sections={Array.isArray(sections) ? sections : []} 
             marketplaceConfig={marketplaceConfig} 
