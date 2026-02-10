@@ -69,18 +69,28 @@ export const AdminSidebar = () => {
   const pathname = usePathname()
   const { community } = useAuth()
 
+  const websiteName = community?.ident || community?.domain || 'My Community'
+  const marketplaceConfig = community?.marketplace_configuration
+
   return (
     <div className="w-64 bg-white shadow-lg">
       <div className="flex flex-col h-full">
-        {/* Logo/Brand */}
-        <div className="flex items-center justify-center h-16 px-4 border-b">
-          <div className="flex items-center space-x-2">
-            <Globe className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-gray-900">
-              {community?.ident || 'Admin'}
+          <Link href={'/'} className="flex items-center space-x-3 mt-4 ml-4">
+            {marketplaceConfig?.logo && (
+              <img 
+                src={marketplaceConfig.logo} 
+                alt={websiteName} 
+                className="h-8 w-auto"
+              />
+            )}
+            
+            <span 
+              className="text-xl font-bold truncate"
+              style={{ color: (community as any)?.topbar?.text_color || marketplaceConfig?.title_color || '#000' }}
+            >
+              {websiteName}
             </span>
-          </div>
-        </div>
+          </Link>
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2">

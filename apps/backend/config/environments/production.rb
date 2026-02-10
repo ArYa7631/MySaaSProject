@@ -101,9 +101,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/health" } }
 
   # Allow only your SaaS domains
-  config.hosts << "www.sanskritikanchal.com"
-  config.hosts << "aryasoftwaretech.com"
-  config.hosts << "prashantkishor.in"
+  config.hosts.clear
 end
 
 

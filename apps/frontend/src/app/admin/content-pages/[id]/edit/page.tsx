@@ -14,6 +14,7 @@ import { ContentPagePreview } from '@/components/admin/content-page-preview'
 import { SortableSections } from '@/components/admin/sortable-sections'
 import { LandingPageSection } from '@mysaasproject/shared'
 import Link from 'next/link'
+import { getApiBaseUrl } from '@/utils/api'
 
 interface ContentPage {
   id: number
@@ -64,7 +65,7 @@ export default function ContentPageEditor() {
     setIsError(false)
     
     try {
-      const apiBaseUrl = '/api/v1'
+      const apiBaseUrl = getApiBaseUrl()
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages/${params.id}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +168,7 @@ export default function ContentPageEditor() {
     
     setIsSaving(true)
     try {
-      const apiBaseUrl = '/api/v1'
+      const apiBaseUrl = getApiBaseUrl()
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages/${contentPage.id}`, {
         method: 'PUT',
         headers: {

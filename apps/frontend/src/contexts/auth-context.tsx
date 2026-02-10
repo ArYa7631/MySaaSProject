@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, LoginCredentials, RegisterCredentials, Community } from '@mysaasproject/shared'
 import { createApiClient } from '@mysaasproject/shared'
+import { getApiBaseUrl } from '@/utils/api'
 
 interface AuthContextType {
   user: User | null
@@ -16,9 +17,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const API_BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3001/api/v1'
-  : '/api/v1';
+const API_BASE_URL = getApiBaseUrl();
 const apiClient = createApiClient(API_BASE_URL)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -40,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (user.community_id && !communityData) {
           try {
             const communityResponse = await apiClient.get<{ data: Community }>(
-              `/communities/${user.community_id}`
+              `/communities/${user.community_id}?include_marketplace_configuration=true`
             )
             const community = communityResponse.data
             setCommunity(community)

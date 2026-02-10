@@ -12,7 +12,7 @@ interface UseSuperAdminReturn {
 
 export function useSuperAdmin(): UseSuperAdminReturn {
   const { user, loading: authLoading } = useAuth()
-  const { community, loading: communityLoading } = useCommunityContext()
+  const { community, isLoading: communityLoading } = useCommunityContext()
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -59,7 +59,7 @@ export function useSuperAdmin(): UseSuperAdminReturn {
         } else {
           // For non-localhost domains, check if it's a super admin domain
           // This would typically be your main platform domain
-          const isMainDomain = currentDomain === process.env.NEXT_PUBLIC_SUPER_ADMIN_DOMAIN
+          const isMainDomain = currentDomain === "aryasoftwaretech.com"
           isSuperAdminDomain = isMainDomain
           console.log('Non-localhost super admin check:', isMainDomain)
         }

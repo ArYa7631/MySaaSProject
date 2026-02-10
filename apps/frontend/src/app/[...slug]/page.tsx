@@ -9,6 +9,7 @@ import { Footer } from '@/components/layout/footer'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { LandingPageSection } from '@mysaasproject/shared'
+import { getApiBaseUrl } from '@/utils/api'
 
 interface ContentPage {
   id: number
@@ -50,7 +51,7 @@ export default function DynamicContentPage() {
     setIsError(false)
     
     try {
-      const apiBaseUrl = '/api/v1'
+      const apiBaseUrl = getApiBaseUrl()
       const response = await fetch(`${apiBaseUrl}/communities/${community.id}/content_pages?end_point=${encodeURIComponent(endpoint)}&active_only=true`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -128,7 +129,7 @@ export default function DynamicContentPage() {
       <div className="min-h-screen">
         <Navbar config={marketplaceConfig} />
         <main>
-          <div className="bg-gray-50 py-8">
+          {/* <div className="bg-gray-50 py-8">
             <div className="max-w-4xl mx-auto px-4 text-center">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
                 {contentPage.title}
@@ -139,7 +140,7 @@ export default function DynamicContentPage() {
                 </p>
               )}
             </div>
-          </div>
+          </div> */}
 
           <RenderSections 
             sections={Array.isArray(sections) ? sections : []} 
